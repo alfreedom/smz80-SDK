@@ -1,0 +1,11 @@
+-mjwx
+-i _build/Z80-Bootloader-v1.hex
+-b _CODE = 0x6810
+-b _DATA = 0x8000
+-k /usr/local/bin/../share/sdcc/lib/z80
+-k /usr/local/share/sdcc/lib/z80
+-l z80
+_build/sysmap.rel
+_build/Z80-Bootloader-v1.rel
+
+-e

@@ -1,0 +1,2315 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.5.0 #9253 (Jun 20 2015) (Linux)
+                              4 ; This file was generated Tue Oct 31 17:12:24 2017
+                              5 ;--------------------------------------------------------
+                              6 	.module main
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 	.globl _init_system
+                             14 	.globl _isr_vector38
+                             15 	.globl _isr_vector66
+                             16 	.globl _uart_interrupt_isr
+                             17 	.globl _isprint
+                             18 	.globl _flag
+                             19 	.globl _cont
+                             20 	.globl ___ret_aux
+                             21 	.globl _address_low
+                             22 	.globl _address_hight
+                             23 	.globl _data
+                             24 	.globl _write_byte_EEPROM_ptr
+                             25 	.globl _delay_1ms_ptr
+                             26 	.globl _size
+                             27 	.globl _dir_destination
+                             28 	.globl _dir_origin
+                             29 	.globl _delay_1ms
+                             30 	.globl _delay_ms
+                             31 	.globl _delay_10us
+                             32 	.globl _delay_100us
+                             33 	.globl _copeaBloque
+                             34 	.globl _uart_init
+                             35 	.globl _uart_write
+                             36 	.globl _uart_write_buffer
+                             37 	.globl _uart_read
+                             38 	.globl _uart_read_buffer
+                             39 	.globl _uart_available
+                             40 	.globl _uart_flush
+                             41 	.globl _uart_print
+                             42 	.globl _uart_read_line
+                             43 	.globl _printBuffer
+                             44 	.globl _eeprom_write
+                             45 	.globl _eeprom_erase
+                             46 	.globl _eeprom_write_buffer
+                             47 	.globl _eeprom_read
+                             48 	.globl _eeprom_read_buffer
+                             49 	.globl _write_byte
+                             50 	.globl _packet_fill
+                             51 	.globl _packet_check
+                             52 	.globl _packet_read
+                             53 	.globl _packet_send
+                             54 	.globl _bootloader_init
+                             55 	.globl _bootloader_check_program_commnad
+                             56 	.globl _bootloader_run
+                             57 	.globl _bootloader_start_app
+                             58 	.globl _io_write
+                             59 	.globl _io_read
+                             60 	.globl _io_write_buffer
+                             61 	.globl _io_read_buffer
+                             62 	.globl _ppi_init
+                             63 	.globl _ppi_set_portc_bit
+                             64 	.globl _ppi_clear_portc_bit
+                             65 	.globl _test_program_command
+                             66 ;--------------------------------------------------------
+                             67 ; special function registers
+                             68 ;--------------------------------------------------------
+                     0011    69 _URRBR	=	0x0011
+                     0011    70 _URTHR	=	0x0011
+                     0010    71 _URCONTROL	=	0x0010
+                     0000    72 _PPI_PORTA	=	0x0000
+                     0001    73 _PPI_PORTB	=	0x0001
+                     0002    74 _PPI_PORTC	=	0x0002
+                     0003    75 _PPI_CTRL	=	0x0003
+                             76 ;--------------------------------------------------------
+                             77 ; ram data
+                             78 ;--------------------------------------------------------
+                             79 	.area _DATA
+   0000                      80 _dir_origin::
+   0000                      81 	.ds 2
+   0002                      82 _dir_destination::
+   0002                      83 	.ds 2
+   0004                      84 _size::
+   0004                      85 	.ds 2
+   0006                      86 _delay_1ms_ptr::
+   0006                      87 	.ds 2
+   0008                      88 __uart_in_buffer:
+   0008                      89 	.ds 1024
+   0408                      90 __in_buffer_index:
+   0408                      91 	.ds 2
+   040A                      92 __out_buffer_index:
+   040A                      93 	.ds 2
+   040C                      94 __is_interrupt_enable:
+   040C                      95 	.ds 1
+   040D                      96 _eeprom_ptr:
+   040D                      97 	.ds 2
+   040F                      98 _write_byte_EEPROM_ptr::
+   040F                      99 	.ds 2
+   0411                     100 _data::
+   0411                     101 	.ds 1
+   0412                     102 _address_hight::
+   0412                     103 	.ds 1
+   0413                     104 _address_low::
+   0413                     105 	.ds 1
+   0414                     106 _aux_address_l:
+   0414                     107 	.ds 1
+   0415                     108 _aux_address_h:
+   0415                     109 	.ds 1
+   0416                     110 _old_app_int_isr_addr:
+   0416                     111 	.ds 2
+   0418                     112 _old_app_int_isr_addr_l:
+   0418                     113 	.ds 1
+   0419                     114 _old_app_int_isr_addr_h:
+   0419                     115 	.ds 1
+   041A                     116 _old_app_nmi_isr_addr:
+   041A                     117 	.ds 2
+   041C                     118 _old_app_nmi_isr_addr_l:
+   041C                     119 	.ds 1
+   041D                     120 _old_app_nmi_isr_addr_h:
+   041D                     121 	.ds 1
+   041E                     122 _pkg_in:
+   041E                     123 	.ds 260
+   0522                     124 _pkg_out:
+   0522                     125 	.ds 260
+   0626                     126 ___ret_aux::
+   0626                     127 	.ds 1
+   0627                     128 _cont::
+   0627                     129 	.ds 2
+   0629                     130 _flag::
+   0629                     131 	.ds 2
+                            132 ;--------------------------------------------------------
+                            133 ; ram data
+                            134 ;--------------------------------------------------------
+                            135 	.area _INITIALIZED
+   0000                     136 _ptr_int_isr:
+   0000                     137 	.ds 2
+   0002                     138 _ptr_int_isr_l:
+   0002                     139 	.ds 2
+   0004                     140 _ptr_int_isr_h:
+   0004                     141 	.ds 2
+   0006                     142 _ptr_nmi_isr:
+   0006                     143 	.ds 2
+   0008                     144 _ptr_nmi_isr_l:
+   0008                     145 	.ds 2
+   000A                     146 _ptr_nmi_isr_h:
+   000A                     147 	.ds 2
+   000C                     148 _app_main_addr:
+   000C                     149 	.ds 2
+                            150 ;--------------------------------------------------------
+                            151 ; absolute external ram data
+                            152 ;--------------------------------------------------------
+                            153 	.area _DABS (ABS)
+                            154 ;--------------------------------------------------------
+                            155 ; global & static initialisations
+                            156 ;--------------------------------------------------------
+                            157 	.area _HOME
+                            158 	.area _GSINIT
+                            159 	.area _GSFINAL
+                            160 	.area _GSINIT
+                            161 ;--------------------------------------------------------
+                            162 ; Home
+                            163 ;--------------------------------------------------------
+                            164 	.area _HOME
+                            165 	.area _HOME
+                            166 ;--------------------------------------------------------
+                            167 ; code
+                            168 ;--------------------------------------------------------
+                            169 	.area _CODE
+                            170 ;./include/z80utils.h:86: void delay_1ms(){
+                            171 ;	---------------------------------
+                            172 ; Function delay_1ms
+                            173 ; ---------------------------------
+   0000                     174 _delay_1ms::
+                            175 ;./include/z80utils.h:93: __endasm;
+   0000 D9            [ 4]  176 	EXX
+   0001 08            [ 4]  177 	EX AF,AF'
+                            178 ;./include/z80utils.h:96: for(j=0;j<0x04;j++)
+   0002 21 00 00      [10]  179 	ld	hl,#0x0000
+   0005                     180 00106$:
+                            181 ;./include/z80utils.h:97: for(i=0;i<0x4FF;i++)
+   0005 11 FF 04      [10]  182 	ld	de,#0x04FF
+   0008                     183 00105$:
+                            184 ;./include/z80utils.h:98: __asm__("nop");
+   0008 00            [ 4]  185 	nop
+   0009 4B            [ 4]  186 	ld	c,e
+   000A 42            [ 4]  187 	ld	b,d
+   000B 0B            [ 6]  188 	dec	bc
+   000C 59            [ 4]  189 	ld	e, c
+                            190 ;./include/z80utils.h:97: for(i=0;i<0x4FF;i++)
+   000D 78            [ 4]  191 	ld	a,b
+   000E 57            [ 4]  192 	ld	d,a
+   000F B1            [ 4]  193 	or	a,c
+   0010 20 F6         [12]  194 	jr	NZ,00105$
+                            195 ;./include/z80utils.h:96: for(j=0;j<0x04;j++)
+   0012 23            [ 6]  196 	inc	hl
+   0013 7D            [ 4]  197 	ld	a,l
+   0014 D6 04         [ 7]  198 	sub	a, #0x04
+   0016 7C            [ 4]  199 	ld	a,h
+   0017 17            [ 4]  200 	rla
+   0018 3F            [ 4]  201 	ccf
+   0019 1F            [ 4]  202 	rra
+   001A DE 80         [ 7]  203 	sbc	a, #0x80
+   001C 38 E7         [12]  204 	jr	C,00106$
+                            205 ;./include/z80utils.h:112: __endasm;
+   001E 08            [ 4]  206 	EX AF,AF'
+   001F D9            [ 4]  207 	EXX
+   0020 C9            [10]  208 	ret
+                            209 ;./include/z80utils.h:115: void delay_ms(int ms){
+                            210 ;	---------------------------------
+                            211 ; Function delay_ms
+                            212 ; ---------------------------------
+   0021                     213 _delay_ms::
+   0021 DD E5         [15]  214 	push	ix
+   0023 DD 21 00 00   [14]  215 	ld	ix,#0
+   0027 DD 39         [15]  216 	add	ix,sp
+                            217 ;./include/z80utils.h:121: __endasm;
+   0029 D9            [ 4]  218 	EXX
+   002A 08            [ 4]  219 	EX AF,AF'
+                            220 ;./include/z80utils.h:125: while(ms--)
+   002B DD 4E 04      [19]  221 	ld	c,4 (ix)
+   002E DD 46 05      [19]  222 	ld	b,5 (ix)
+   0031                     223 00102$:
+   0031 59            [ 4]  224 	ld	e, c
+   0032 50            [ 4]  225 	ld	d, b
+   0033 0B            [ 6]  226 	dec	bc
+   0034 7A            [ 4]  227 	ld	a,d
+   0035 B3            [ 4]  228 	or	a,e
+   0036 28 0E         [12]  229 	jr	Z,00104$
+                            230 ;./include/z80utils.h:126: for(i=0;i<0x10A;i++)
+   0038 21 0A 01      [10]  231 	ld	hl,#0x010A
+   003B                     232 00107$:
+                            233 ;./include/z80utils.h:127: __asm__("nop");
+   003B 00            [ 4]  234 	nop
+   003C EB            [ 4]  235 	ex	de,hl
+   003D 1B            [ 6]  236 	dec	de
+   003E 6B            [ 4]  237 	ld	l, e
+                            238 ;./include/z80utils.h:126: for(i=0;i<0x10A;i++)
+   003F 7A            [ 4]  239 	ld	a,d
+   0040 67            [ 4]  240 	ld	h,a
+   0041 B3            [ 4]  241 	or	a,e
+   0042 20 F7         [12]  242 	jr	NZ,00107$
+   0044 18 EB         [12]  243 	jr	00102$
+   0046                     244 00104$:
+                            245 ;./include/z80utils.h:141: __endasm;
+   0046 08            [ 4]  246 	EX AF,AF'
+   0047 D9            [ 4]  247 	EXX
+   0048 DD E1         [14]  248 	pop	ix
+   004A C9            [10]  249 	ret
+                            250 ;./include/z80utils.h:144: void delay_10us(){
+                            251 ;	---------------------------------
+                            252 ; Function delay_10us
+                            253 ; ---------------------------------
+   004B                     254 _delay_10us::
+                            255 ;./include/z80utils.h:156: __endasm;
+   004B D9            [ 4]  256 	EXX
+   004C 08            [ 4]  257 	EX AF,AF'
+   004D 06 02         [ 7]  258 	LD B,#0x2
+   004F                     259 	    LOOP_10:
+   004F 10 FE         [13]  260 	DJNZ LOOP_10
+   0051 08            [ 4]  261 	EX AF,AF'
+   0052 D9            [ 4]  262 	EXX
+   0053 C9            [10]  263 	ret
+                            264 ;./include/z80utils.h:168: void delay_100us(){
+                            265 ;	---------------------------------
+                            266 ; Function delay_100us
+                            267 ; ---------------------------------
+   0054                     268 _delay_100us::
+                            269 ;./include/z80utils.h:181: __endasm;
+   0054 D9            [ 4]  270 	EXX
+   0055 08            [ 4]  271 	EX AF,AF'
+   0056 06 3A         [ 7]  272 	LD B,#0x3A
+   0058                     273 	    LOOP_100:
+   0058 10 FE         [13]  274 	DJNZ LOOP_100
+   005A 08            [ 4]  275 	EX AF,AF'
+   005B D9            [ 4]  276 	EXX
+   005C C9            [10]  277 	RET
+   005D C9            [10]  278 	ret
+                            279 ;./include/z80utils.h:192: void copeaBloque(uint16_t origen,uint16_t destino, uint8_t tam)
+                            280 ;	---------------------------------
+                            281 ; Function copeaBloque
+                            282 ; ---------------------------------
+   005E                     283 _copeaBloque::
+                            284 ;./include/z80utils.h:194: dir_origin = origen;
+   005E FD 21 02 00   [14]  285 	ld	iy,#2
+   0062 FD 39         [15]  286 	add	iy,sp
+   0064 FD 7E 00      [19]  287 	ld	a,0 (iy)
+   0067 FD 21r00r00   [14]  288 	ld	iy,#_dir_origin
+   006B FD 77 00      [19]  289 	ld	0 (iy),a
+   006E FD 21 02 00   [14]  290 	ld	iy,#2
+   0072 FD 39         [15]  291 	add	iy,sp
+   0074 FD 7E 01      [19]  292 	ld	a,1 (iy)
+   0077 FD 21r00r00   [14]  293 	ld	iy,#_dir_origin
+   007B FD 77 01      [19]  294 	ld	1 (iy),a
+                            295 ;./include/z80utils.h:195: dir_destination=destino;
+   007E FD 21 04 00   [14]  296 	ld	iy,#4
+   0082 FD 39         [15]  297 	add	iy,sp
+   0084 FD 7E 00      [19]  298 	ld	a,0 (iy)
+   0087 FD 21r02r00   [14]  299 	ld	iy,#_dir_destination
+   008B FD 77 00      [19]  300 	ld	0 (iy),a
+   008E FD 21 04 00   [14]  301 	ld	iy,#4
+   0092 FD 39         [15]  302 	add	iy,sp
+   0094 FD 7E 01      [19]  303 	ld	a,1 (iy)
+   0097 FD 21r02r00   [14]  304 	ld	iy,#_dir_destination
+   009B FD 77 01      [19]  305 	ld	1 (iy),a
+                            306 ;./include/z80utils.h:196: size = tam;
+   009E FD 21 06 00   [14]  307 	ld	iy,#6
+   00A2 FD 39         [15]  308 	add	iy,sp
+   00A4 FD 7E 00      [19]  309 	ld	a,0 (iy)
+   00A7 FD 21r04r00   [14]  310 	ld	iy,#_size
+   00AB FD 77 00      [19]  311 	ld	0 (iy),a
+   00AE FD 21r04r00   [14]  312 	ld	iy,#_size
+   00B2 FD 36 01 00   [19]  313 	ld	1 (iy),#0x00
+                            314 ;./include/z80utils.h:202: __endasm;
+   00B6 2Ar00r00      [16]  315 	LD HL,(_dir_origin)
+   00B9 ED 5Br02r00   [20]  316 	LD DE,(_dir_destination)
+   00BD ED 4Br04r00   [20]  317 	LD BC,(_size)
+   00C1 ED B0         [21]  318 	LDIR
+   00C3 C9            [10]  319 	ret
+                            320 ;./include/z80uart.h:218: void uart_init(const uart_cfg_t *uart_config) {
+                            321 ;	---------------------------------
+                            322 ; Function uart_init
+                            323 ; ---------------------------------
+   00C4                     324 _uart_init::
+   00C4 DD E5         [15]  325 	push	ix
+   00C6 DD 21 00 00   [14]  326 	ld	ix,#0
+   00CA DD 39         [15]  327 	add	ix,sp
+                            328 ;./include/z80uart.h:219: URCONTROL = (uart_config->divisor) | (uart_config->configuracionDePalabra) | (uart_config->interrupcionesDelTransmisor)| (uart_config->interrupcionesDelReceptor);
+   00CC DD 5E 04      [19]  329 	ld	e,4 (ix)
+   00CF DD 56 05      [19]  330 	ld	d,5 (ix)
+   00D2 1A            [ 7]  331 	ld	a,(de)
+   00D3 43            [ 4]  332 	ld	b,e
+   00D4 62            [ 4]  333 	ld	h,d
+   00D5 68            [ 4]  334 	ld	l, b
+   00D6 23            [ 6]  335 	inc	hl
+   00D7 6E            [ 7]  336 	ld	l,(hl)
+   00D8 B5            [ 4]  337 	or	a, l
+   00D9 4B            [ 4]  338 	ld	c,e
+   00DA 62            [ 4]  339 	ld	h,d
+   00DB 69            [ 4]  340 	ld	l, c
+   00DC 23            [ 6]  341 	inc	hl
+   00DD 23            [ 6]  342 	inc	hl
+   00DE 66            [ 7]  343 	ld	h,(hl)
+   00DF B4            [ 4]  344 	or	a, h
+   00E0 62            [ 4]  345 	ld	h,d
+   00E1 6B            [ 4]  346 	ld	l, e
+   00E2 23            [ 6]  347 	inc	hl
+   00E3 23            [ 6]  348 	inc	hl
+   00E4 23            [ 6]  349 	inc	hl
+   00E5 56            [ 7]  350 	ld	d,(hl)
+   00E6 B2            [ 4]  351 	or	a, d
+   00E7 D3 10         [11]  352 	out	(_URCONTROL),a
+   00E9 DD E1         [14]  353 	pop	ix
+   00EB C9            [10]  354 	ret
+                            355 ;./include/z80uart.h:222: void uart_write(uint8_t c){
+                            356 ;	---------------------------------
+                            357 ; Function uart_write
+                            358 ; ---------------------------------
+   00EC                     359 _uart_write::
+                            360 ;./include/z80uart.h:224: while( !(URCONTROL & BV(UTDRE)))
+   00EC                     361 00101$:
+   00EC DB 10         [11]  362 	in	a,(_URCONTROL)
+   00EE E6 02         [ 7]  363 	and	a, #0x02
+   00F0 20 03         [12]  364 	jr	NZ,00103$
+                            365 ;./include/z80uart.h:225: NOP();       
+   00F2 00            [ 4]  366 	NOP
+   00F3 18 F7         [12]  367 	jr	00101$
+   00F5                     368 00103$:
+                            369 ;./include/z80uart.h:227: URTHR = (char)c;
+   00F5 21 02 00      [10]  370 	ld	hl, #2+0
+   00F8 39            [11]  371 	add	hl, sp
+   00F9 7E            [ 7]  372 	ld	a, (hl)
+   00FA D3 11         [11]  373 	out	(_URTHR),a
+   00FC C9            [10]  374 	ret
+                            375 ;./include/z80uart.h:230: void uart_write_buffer(uint8_t* buffer, int count){
+                            376 ;	---------------------------------
+                            377 ; Function uart_write_buffer
+                            378 ; ---------------------------------
+   00FD                     379 _uart_write_buffer::
+                            380 ;./include/z80uart.h:232: for (i = 0; i < count; i++)
+   00FD 11 00 00      [10]  381 	ld	de,#0x0000
+   0100                     382 00103$:
+   0100 21 04 00      [10]  383 	ld	hl,#4
+   0103 39            [11]  384 	add	hl,sp
+   0104 7B            [ 4]  385 	ld	a,e
+   0105 96            [ 7]  386 	sub	a, (hl)
+   0106 7A            [ 4]  387 	ld	a,d
+   0107 23            [ 6]  388 	inc	hl
+   0108 9E            [ 7]  389 	sbc	a, (hl)
+   0109 E2r0Er01      [10]  390 	jp	PO, 00116$
+   010C EE 80         [ 7]  391 	xor	a, #0x80
+   010E                     392 00116$:
+   010E F0            [11]  393 	ret	P
+                            394 ;./include/z80uart.h:233: uart_write(buffer[i]);    
+   010F 21 02 00      [10]  395 	ld	hl, #2
+   0112 39            [11]  396 	add	hl, sp
+   0113 7E            [ 7]  397 	ld	a, (hl)
+   0114 23            [ 6]  398 	inc	hl
+   0115 66            [ 7]  399 	ld	h, (hl)
+   0116 6F            [ 4]  400 	ld	l, a
+   0117 19            [11]  401 	add	hl,de
+   0118 66            [ 7]  402 	ld	h,(hl)
+   0119 D5            [11]  403 	push	de
+   011A E5            [11]  404 	push	hl
+   011B 33            [ 6]  405 	inc	sp
+   011C CDrECr00      [17]  406 	call	_uart_write
+   011F 33            [ 6]  407 	inc	sp
+   0120 D1            [10]  408 	pop	de
+                            409 ;./include/z80uart.h:232: for (i = 0; i < count; i++)
+   0121 13            [ 6]  410 	inc	de
+   0122 18 DC         [12]  411 	jr	00103$
+                            412 ;./include/z80uart.h:236: uint8_t uart_read(){
+                            413 ;	---------------------------------
+                            414 ; Function uart_read
+                            415 ; ---------------------------------
+   0124                     416 _uart_read::
+                            417 ;./include/z80uart.h:241: while(uart_available()<=0)
+   0124                     418 00101$:
+   0124 CDrA1r01      [17]  419 	call	_uart_available
+   0127 AF            [ 4]  420 	xor	a, a
+   0128 BD            [ 4]  421 	cp	a, l
+   0129 9C            [ 4]  422 	sbc	a, h
+   012A E2r2Fr01      [10]  423 	jp	PO, 00120$
+   012D EE 80         [ 7]  424 	xor	a, #0x80
+   012F                     425 00120$:
+   012F F2r24r01      [10]  426 	jp	P,00101$
+                            427 ;./include/z80uart.h:245: incoming = _uart_in_buffer[_out_buffer_index++];
+   0132 ED 5Br0Ar04   [20]  428 	ld	de,(__out_buffer_index)
+   0136 21r0Ar04      [10]  429 	ld	hl, #__out_buffer_index+0
+   0139 34            [11]  430 	inc	(hl)
+   013A 20 04         [12]  431 	jr	NZ,00121$
+   013C 21r0Br04      [10]  432 	ld	hl, #__out_buffer_index+1
+   013F 34            [11]  433 	inc	(hl)
+   0140                     434 00121$:
+   0140 21r08r00      [10]  435 	ld	hl,#__uart_in_buffer
+   0143 19            [11]  436 	add	hl,de
+   0144 5E            [ 7]  437 	ld	e,(hl)
+   0145 16 00         [ 7]  438 	ld	d,#0x00
+                            439 ;./include/z80uart.h:246: if(_out_buffer_index == UART_BUFFER_SIZE)
+   0147 3Ar0Ar04      [13]  440 	ld	a,(#__out_buffer_index + 0)
+   014A B7            [ 4]  441 	or	a, a
+   014B 20 0D         [12]  442 	jr	NZ,00105$
+   014D 3Ar0Br04      [13]  443 	ld	a,(#__out_buffer_index + 1)
+   0150 D6 04         [ 7]  444 	sub	a, #0x04
+   0152 20 06         [12]  445 	jr	NZ,00105$
+                            446 ;./include/z80uart.h:247: _out_buffer_index=0;
+   0154 21 00 00      [10]  447 	ld	hl,#0x0000
+   0157 22r0Ar04      [16]  448 	ld	(__out_buffer_index),hl
+   015A                     449 00105$:
+                            450 ;./include/z80uart.h:248: return incoming;
+   015A 6B            [ 4]  451 	ld	l,e
+   015B C9            [10]  452 	ret
+                            453 ;./include/z80uart.h:252: int uart_read_buffer(uint8_t* buffer, int count){
+                            454 ;	---------------------------------
+                            455 ; Function uart_read_buffer
+                            456 ; ---------------------------------
+   015C                     457 _uart_read_buffer::
+                            458 ;./include/z80uart.h:255: if(uart_available() < count)
+   015C CDrA1r01      [17]  459 	call	_uart_available
+   015F 55            [ 4]  460 	ld	d,l
+   0160 5C            [ 4]  461 	ld	e,h
+   0161 21 04 00      [10]  462 	ld	hl,#4
+   0164 39            [11]  463 	add	hl,sp
+   0165 7A            [ 4]  464 	ld	a,d
+   0166 96            [ 7]  465 	sub	a, (hl)
+   0167 7B            [ 4]  466 	ld	a,e
+   0168 23            [ 6]  467 	inc	hl
+   0169 9E            [ 7]  468 	sbc	a, (hl)
+   016A E2r6Fr01      [10]  469 	jp	PO, 00122$
+   016D EE 80         [ 7]  470 	xor	a, #0x80
+   016F                     471 00122$:
+   016F F2r76r01      [10]  472 	jp	P,00111$
+                            473 ;./include/z80uart.h:256: return -1;
+   0172 21 FF FF      [10]  474 	ld	hl,#0xFFFF
+   0175 C9            [10]  475 	ret
+                            476 ;./include/z80uart.h:258: for (i = 0; i < count; i++)
+   0176                     477 00111$:
+   0176 11 00 00      [10]  478 	ld	de,#0x0000
+   0179                     479 00105$:
+   0179 21 04 00      [10]  480 	ld	hl,#4
+   017C 39            [11]  481 	add	hl,sp
+   017D 7B            [ 4]  482 	ld	a,e
+   017E 96            [ 7]  483 	sub	a, (hl)
+   017F 7A            [ 4]  484 	ld	a,d
+   0180 23            [ 6]  485 	inc	hl
+   0181 9E            [ 7]  486 	sbc	a, (hl)
+   0182 E2r87r01      [10]  487 	jp	PO, 00123$
+   0185 EE 80         [ 7]  488 	xor	a, #0x80
+   0187                     489 00123$:
+   0187 F2r9Fr01      [10]  490 	jp	P,00103$
+                            491 ;./include/z80uart.h:259: buffer[i]=uart_read();
+   018A 21 02 00      [10]  492 	ld	hl, #2
+   018D 39            [11]  493 	add	hl, sp
+   018E 7E            [ 7]  494 	ld	a, (hl)
+   018F 23            [ 6]  495 	inc	hl
+   0190 66            [ 7]  496 	ld	h, (hl)
+   0191 6F            [ 4]  497 	ld	l, a
+   0192 19            [11]  498 	add	hl,de
+   0193 E5            [11]  499 	push	hl
+   0194 D5            [11]  500 	push	de
+   0195 CDr24r01      [17]  501 	call	_uart_read
+   0198 7D            [ 4]  502 	ld	a,l
+   0199 D1            [10]  503 	pop	de
+   019A E1            [10]  504 	pop	hl
+   019B 77            [ 7]  505 	ld	(hl),a
+                            506 ;./include/z80uart.h:258: for (i = 0; i < count; i++)
+   019C 13            [ 6]  507 	inc	de
+   019D 18 DA         [12]  508 	jr	00105$
+   019F                     509 00103$:
+                            510 ;./include/z80uart.h:261: return i;
+   019F EB            [ 4]  511 	ex	de,hl
+   01A0 C9            [10]  512 	ret
+                            513 ;./include/z80uart.h:264: int uart_available(){
+                            514 ;	---------------------------------
+                            515 ; Function uart_available
+                            516 ; ---------------------------------
+   01A1                     517 _uart_available::
+                            518 ;./include/z80uart.h:265: int count=_in_buffer_index - _out_buffer_index;
+   01A1 21r0Ar04      [10]  519 	ld	hl,#__out_buffer_index
+   01A4 3Ar08r04      [13]  520 	ld	a,(#__in_buffer_index + 0)
+   01A7 96            [ 7]  521 	sub	a, (hl)
+   01A8 57            [ 4]  522 	ld	d,a
+   01A9 3Ar09r04      [13]  523 	ld	a,(#__in_buffer_index + 1)
+   01AC 23            [ 6]  524 	inc	hl
+   01AD 9E            [ 7]  525 	sbc	a, (hl)
+   01AE 5F            [ 4]  526 	ld	e,a
+                            527 ;./include/z80uart.h:267: return (count < 0) ? UART_BUFFER_SIZE - _out_buffer_index-1 : count ;
+   01AF CB 7B         [ 8]  528 	bit	7, e
+   01B1 28 0C         [12]  529 	jr	Z,00103$
+   01B3 21r0Ar04      [10]  530 	ld	hl,#__out_buffer_index
+   01B6 3E FF         [ 7]  531 	ld	a,#0xFF
+   01B8 96            [ 7]  532 	sub	a, (hl)
+   01B9 57            [ 4]  533 	ld	d,a
+   01BA 3E 03         [ 7]  534 	ld	a,#0x03
+   01BC 23            [ 6]  535 	inc	hl
+   01BD 9E            [ 7]  536 	sbc	a, (hl)
+   01BE 5F            [ 4]  537 	ld	e,a
+   01BF                     538 00103$:
+   01BF 6A            [ 4]  539 	ld	l, d
+   01C0 63            [ 4]  540 	ld	h, e
+   01C1 C9            [10]  541 	ret
+                            542 ;./include/z80uart.h:271: void uart_flush(){
+                            543 ;	---------------------------------
+                            544 ; Function uart_flush
+                            545 ; ---------------------------------
+   01C2                     546 _uart_flush::
+                            547 ;./include/z80uart.h:273: _in_buffer_index = _out_buffer_index = 0;
+   01C2 21 00 00      [10]  548 	ld	hl,#0x0000
+   01C5 22r0Ar04      [16]  549 	ld	(__out_buffer_index),hl
+   01C8 2E 00         [ 7]  550 	ld	l, #0x00
+   01CA 22r08r04      [16]  551 	ld	(__in_buffer_index),hl
+   01CD C9            [10]  552 	ret
+                            553 ;./include/z80uart.h:279: void uart_interrupt_isr(){
+                            554 ;	---------------------------------
+                            555 ; Function uart_interrupt_isr
+                            556 ; ---------------------------------
+   01CE                     557 _uart_interrupt_isr::
+                            558 ;./include/z80uart.h:287: __endasm;
+   01CE F5            [11]  559 	push af
+   01CF C5            [11]  560 	push bc
+   01D0 D5            [11]  561 	push de
+   01D1 E5            [11]  562 	push hl
+   01D2 FD E5         [15]  563 	push iy
+                            564 ;./include/z80uart.h:290: _uart_in_buffer[_in_buffer_index++] = URRBR;
+   01D4 ED 5Br08r04   [20]  565 	ld	de,(__in_buffer_index)
+   01D8 21r08r04      [10]  566 	ld	hl, #__in_buffer_index+0
+   01DB 34            [11]  567 	inc	(hl)
+   01DC 20 04         [12]  568 	jr	NZ,00109$
+   01DE 21r09r04      [10]  569 	ld	hl, #__in_buffer_index+1
+   01E1 34            [11]  570 	inc	(hl)
+   01E2                     571 00109$:
+   01E2 21r08r00      [10]  572 	ld	hl,#__uart_in_buffer
+   01E5 19            [11]  573 	add	hl,de
+   01E6 DB 11         [11]  574 	in	a,(_URRBR)
+   01E8 77            [ 7]  575 	ld	(hl),a
+                            576 ;./include/z80uart.h:291: if(_in_buffer_index == UART_BUFFER_SIZE)
+   01E9 FD 21r08r04   [14]  577 	ld	iy,#__in_buffer_index
+   01ED FD 7E 00      [19]  578 	ld	a,0 (iy)
+   01F0 B7            [ 4]  579 	or	a, a
+   01F1 20 11         [12]  580 	jr	NZ,00102$
+   01F3 FD 21r08r04   [14]  581 	ld	iy,#__in_buffer_index
+   01F7 FD 7E 01      [19]  582 	ld	a,1 (iy)
+   01FA D6 04         [ 7]  583 	sub	a, #0x04
+   01FC 20 06         [12]  584 	jr	NZ,00102$
+                            585 ;./include/z80uart.h:292: _in_buffer_index=0;
+   01FE 21 00 00      [10]  586 	ld	hl,#0x0000
+   0201 22r08r04      [16]  587 	ld	(__in_buffer_index),hl
+   0204                     588 00102$:
+                            589 ;./include/z80uart.h:302: __endasm;
+   0204 FD E1         [14]  590 	pop iy
+   0206 E1            [10]  591 	pop hl
+   0207 D1            [10]  592 	pop de
+   0208 C1            [10]  593 	pop bc
+   0209 F1            [10]  594 	pop af
+   020A FB            [ 4]  595 	ei
+   020B C9            [10]  596 	ret
+   020C C9            [10]  597 	ret
+                            598 ;./include/z80uart.h:306: void uart_print(const uint8_t* str){
+                            599 ;	---------------------------------
+                            600 ; Function uart_print
+                            601 ; ---------------------------------
+   020D                     602 _uart_print::
+                            603 ;./include/z80uart.h:309: while(*str)       
+   020D C1            [10]  604 	pop	bc
+   020E E1            [10]  605 	pop	hl
+   020F E5            [11]  606 	push	hl
+   0210 C5            [11]  607 	push	bc
+   0211                     608 00101$:
+   0211 7E            [ 7]  609 	ld	a,(hl)
+   0212 B7            [ 4]  610 	or	a, a
+   0213 C8            [11]  611 	ret	Z
+                            612 ;./include/z80uart.h:310: uart_write(*str++); // envía el siguiente caracter. 
+   0214 23            [ 6]  613 	inc	hl
+   0215 E5            [11]  614 	push	hl
+   0216 F5            [11]  615 	push	af
+   0217 33            [ 6]  616 	inc	sp
+   0218 CDrECr00      [17]  617 	call	_uart_write
+   021B 33            [ 6]  618 	inc	sp
+   021C E1            [10]  619 	pop	hl
+   021D 18 F2         [12]  620 	jr	00101$
+                            621 ;./include/z80uart.h:313: int uart_read_line(uint8_t* str){
+                            622 ;	---------------------------------
+                            623 ; Function uart_read_line
+                            624 ; ---------------------------------
+   021F                     625 _uart_read_line::
+   021F DD E5         [15]  626 	push	ix
+   0221 DD 21 00 00   [14]  627 	ld	ix,#0
+   0225 DD 39         [15]  628 	add	ix,sp
+                            629 ;./include/z80uart.h:315: int n=0;
+   0227 01 00 00      [10]  630 	ld	bc,#0x0000
+                            631 ;./include/z80uart.h:317: while(n<MAXLINE-1 && (c=uart_read()) != '\n' && c !='\r'){
+   022A                     632 00111$:
+   022A 79            [ 4]  633 	ld	a,c
+   022B D6 63         [ 7]  634 	sub	a, #0x63
+   022D 78            [ 4]  635 	ld	a,b
+   022E 17            [ 4]  636 	rla
+   022F 3F            [ 4]  637 	ccf
+   0230 1F            [ 4]  638 	rra
+   0231 DE 80         [ 7]  639 	sbc	a, #0x80
+   0233 30 71         [12]  640 	jr	NC,00113$
+   0235 C5            [11]  641 	push	bc
+   0236 CDr24r01      [17]  642 	call	_uart_read
+   0239 7D            [ 4]  643 	ld	a,l
+   023A C1            [10]  644 	pop	bc
+   023B 57            [ 4]  645 	ld	d,a
+   023C D6 0A         [ 7]  646 	sub	a, #0x0A
+   023E 28 66         [12]  647 	jr	Z,00113$
+                            648 ;./include/z80uart.h:319: if(c == 0x7F || c==0x08){
+   0240 7A            [ 4]  649 	ld	a,d
+   0241 FE 0D         [ 7]  650 	cp	a,#0x0D
+   0243 28 61         [12]  651 	jr	Z,00113$
+   0245 FE 7F         [ 7]  652 	cp	a,#0x7F
+   0247 28 04         [12]  653 	jr	Z,00105$
+   0249 D6 08         [ 7]  654 	sub	a, #0x08
+   024B 20 2D         [12]  655 	jr	NZ,00106$
+   024D                     656 00105$:
+                            657 ;./include/z80uart.h:321: if(n>0){
+   024D AF            [ 4]  658 	xor	a, a
+   024E B9            [ 4]  659 	cp	a, c
+   024F 98            [ 4]  660 	sbc	a, b
+   0250 E2r55r02      [10]  661 	jp	PO, 00149$
+   0253 EE 80         [ 7]  662 	xor	a, #0x80
+   0255                     663 00149$:
+   0255 F2r2Ar02      [10]  664 	jp	P,00111$
+                            665 ;./include/z80uart.h:322: str[--n]='\0';
+   0258 0B            [ 6]  666 	dec	bc
+   0259 DD 6E 04      [19]  667 	ld	l,4 (ix)
+   025C DD 66 05      [19]  668 	ld	h,5 (ix)
+   025F 09            [11]  669 	add	hl,bc
+   0260 36 00         [10]  670 	ld	(hl),#0x00
+                            671 ;./include/z80uart.h:323: uart_write(c);
+   0262 C5            [11]  672 	push	bc
+   0263 D5            [11]  673 	push	de
+   0264 D5            [11]  674 	push	de
+   0265 33            [ 6]  675 	inc	sp
+   0266 CDrECr00      [17]  676 	call	_uart_write
+   0269 33            [ 6]  677 	inc	sp
+   026A 3E 20         [ 7]  678 	ld	a,#0x20
+   026C F5            [11]  679 	push	af
+   026D 33            [ 6]  680 	inc	sp
+   026E CDrECr00      [17]  681 	call	_uart_write
+   0271 33            [ 6]  682 	inc	sp
+   0272 33            [ 6]  683 	inc	sp
+   0273 CDrECr00      [17]  684 	call	_uart_write
+   0276 33            [ 6]  685 	inc	sp
+   0277 C1            [10]  686 	pop	bc
+   0278 18 B0         [12]  687 	jr	00111$
+   027A                     688 00106$:
+                            689 ;./include/z80uart.h:329: if(isprint(c))
+   027A 6A            [ 4]  690 	ld	l,d
+   027B 26 00         [ 7]  691 	ld	h,#0x00
+   027D C5            [11]  692 	push	bc
+   027E D5            [11]  693 	push	de
+   027F E5            [11]  694 	push	hl
+   0280 CDr00r00      [17]  695 	call	_isprint
+   0283 F1            [10]  696 	pop	af
+   0284 D1            [10]  697 	pop	de
+   0285 C1            [10]  698 	pop	bc
+   0286 7C            [ 4]  699 	ld	a,h
+   0287 B5            [ 4]  700 	or	a,l
+   0288 28 A0         [12]  701 	jr	Z,00111$
+                            702 ;./include/z80uart.h:331: str[n++]=c;
+   028A C5            [11]  703 	push	bc
+   028B FD E1         [14]  704 	pop	iy
+   028D 03            [ 6]  705 	inc	bc
+   028E C5            [11]  706 	push	bc
+   028F DD 4E 04      [19]  707 	ld	c,4 (ix)
+   0292 DD 46 05      [19]  708 	ld	b,5 (ix)
+   0295 FD 09         [15]  709 	add	iy, bc
+   0297 C1            [10]  710 	pop	bc
+   0298 FD 72 00      [19]  711 	ld	0 (iy), d
+                            712 ;./include/z80uart.h:332: uart_write(c);
+   029B C5            [11]  713 	push	bc
+   029C D5            [11]  714 	push	de
+   029D 33            [ 6]  715 	inc	sp
+   029E CDrECr00      [17]  716 	call	_uart_write
+   02A1 33            [ 6]  717 	inc	sp
+   02A2 C1            [10]  718 	pop	bc
+   02A3 C3r2Ar02      [10]  719 	jp	00111$
+   02A6                     720 00113$:
+                            721 ;./include/z80uart.h:336: str[n]='\0';     
+   02A6 DD 6E 04      [19]  722 	ld	l,4 (ix)
+   02A9 DD 66 05      [19]  723 	ld	h,5 (ix)
+   02AC 09            [11]  724 	add	hl,bc
+   02AD 36 00         [10]  725 	ld	(hl),#0x00
+                            726 ;./include/z80uart.h:337: uart_write('\n');
+   02AF C5            [11]  727 	push	bc
+   02B0 3E 0A         [ 7]  728 	ld	a,#0x0A
+   02B2 F5            [11]  729 	push	af
+   02B3 33            [ 6]  730 	inc	sp
+   02B4 CDrECr00      [17]  731 	call	_uart_write
+   02B7 33            [ 6]  732 	inc	sp
+                            733 ;./include/z80uart.h:338: return n;
+   02B8 E1            [10]  734 	pop	hl
+   02B9 DD E1         [14]  735 	pop	ix
+   02BB C9            [10]  736 	ret
+                            737 ;./include/z80uart.h:341: void printBuffer()
+                            738 ;	---------------------------------
+                            739 ; Function printBuffer
+                            740 ; ---------------------------------
+   02BC                     741 _printBuffer::
+                            742 ;./include/z80uart.h:344: for (i=0;i<UART_BUFFER_SIZE;i++)
+   02BC 11 00 00      [10]  743 	ld	de,#0x0000
+   02BF                     744 00102$:
+                            745 ;./include/z80uart.h:345: uart_write(_uart_in_buffer[i]);
+   02BF 21r08r00      [10]  746 	ld	hl,#__uart_in_buffer
+   02C2 19            [11]  747 	add	hl,de
+   02C3 66            [ 7]  748 	ld	h,(hl)
+   02C4 D5            [11]  749 	push	de
+   02C5 E5            [11]  750 	push	hl
+   02C6 33            [ 6]  751 	inc	sp
+   02C7 CDrECr00      [17]  752 	call	_uart_write
+   02CA 33            [ 6]  753 	inc	sp
+   02CB D1            [10]  754 	pop	de
+                            755 ;./include/z80uart.h:344: for (i=0;i<UART_BUFFER_SIZE;i++)
+   02CC 13            [ 6]  756 	inc	de
+   02CD 7A            [ 4]  757 	ld	a,d
+   02CE EE 80         [ 7]  758 	xor	a, #0x80
+   02D0 D6 84         [ 7]  759 	sub	a, #0x84
+   02D2 38 EB         [12]  760 	jr	C,00102$
+   02D4 C9            [10]  761 	ret
+                            762 ;./include/z80eeprom.h:73: uint8_t eeprom_write(uint16_t address, uint8_t number){
+                            763 ;	---------------------------------
+                            764 ; Function eeprom_write
+                            765 ; ---------------------------------
+   02D5                     766 _eeprom_write::
+                            767 ;./include/z80eeprom.h:80: dir_low = address;
+   02D5 FD 21 02 00   [14]  768 	ld	iy,#2
+   02D9 FD 39         [15]  769 	add	iy,sp
+   02DB FD 56 00      [19]  770 	ld	d,0 (iy)
+                            771 ;./include/z80eeprom.h:81: dir_hight = (address >> 8);
+   02DE FD 46 01      [19]  772 	ld	b,1 (iy)
+                            773 ;./include/z80eeprom.h:83: if(address > BOOT_RESET_ADDR && address < BOOT_START_ADDR){
+   02E1 3E 05         [ 7]  774 	ld	a,#0x05
+   02E3 FD BE 00      [19]  775 	cp	a, 0 (iy)
+   02E6 3E 00         [ 7]  776 	ld	a,#0x00
+   02E8 FD 9E 01      [19]  777 	sbc	a, 1 (iy)
+   02EB 30 1E         [12]  778 	jr	NC,00102$
+   02ED FD 7E 01      [19]  779 	ld	a,1 (iy)
+   02F0 D6 68         [ 7]  780 	sub	a, #0x68
+   02F2 30 17         [12]  781 	jr	NC,00102$
+                            782 ;./include/z80eeprom.h:84: write_byte_EEPROM_ptr(dir_hight,dir_low,number);//apuntador a funcion en ram para escritura en ram.
+   02F4 21 04 00      [10]  783 	ld	hl, #4+0
+   02F7 39            [11]  784 	add	hl, sp
+   02F8 7E            [ 7]  785 	ld	a, (hl)
+   02F9 F5            [11]  786 	push	af
+   02FA 33            [ 6]  787 	inc	sp
+   02FB D5            [11]  788 	push	de
+   02FC 33            [ 6]  789 	inc	sp
+   02FD C5            [11]  790 	push	bc
+   02FE 33            [ 6]  791 	inc	sp
+   02FF 2Ar0Fr04      [16]  792 	ld	hl,(_write_byte_EEPROM_ptr)
+   0302 CDr00r00      [17]  793 	call	___sdcc_call_hl
+   0305 F1            [10]  794 	pop	af
+   0306 33            [ 6]  795 	inc	sp
+                            796 ;./include/z80eeprom.h:87: NOP();
+   0307 00            [ 4]  797 	NOP
+                            798 ;./include/z80eeprom.h:88: return 1;
+   0308 2E 01         [ 7]  799 	ld	l,#0x01
+   030A C9            [10]  800 	ret
+   030B                     801 00102$:
+                            802 ;./include/z80eeprom.h:91: return 0;
+   030B 2E 00         [ 7]  803 	ld	l,#0x00
+   030D C9            [10]  804 	ret
+                            805 ;./include/z80eeprom.h:95: void eeprom_erase(uint16_t address, uint16_t count) {
+                            806 ;	---------------------------------
+                            807 ; Function eeprom_erase
+                            808 ; ---------------------------------
+   030E                     809 _eeprom_erase::
+   030E DD E5         [15]  810 	push	ix
+   0310 DD 21 00 00   [14]  811 	ld	ix,#0
+   0314 DD 39         [15]  812 	add	ix,sp
+                            813 ;./include/z80eeprom.h:98: for(addr = address; addr < (address+count); addr ++)
+   0316 DD 4E 04      [19]  814 	ld	c,4 (ix)
+   0319 DD 46 05      [19]  815 	ld	b,5 (ix)
+   031C DD 7E 06      [19]  816 	ld	a,6 (ix)
+   031F 81            [ 4]  817 	add	a, c
+   0320 57            [ 4]  818 	ld	d,a
+   0321 DD 7E 07      [19]  819 	ld	a,7 (ix)
+   0324 88            [ 4]  820 	adc	a, b
+   0325 5F            [ 4]  821 	ld	e,a
+   0326                     822 00103$:
+   0326 79            [ 4]  823 	ld	a,c
+   0327 92            [ 4]  824 	sub	a, d
+   0328 78            [ 4]  825 	ld	a,b
+   0329 9B            [ 4]  826 	sbc	a, e
+   032A 30 11         [12]  827 	jr	NC,00105$
+                            828 ;./include/z80eeprom.h:99: eeprom_write(addr, 0xFF);
+   032C C5            [11]  829 	push	bc
+   032D D5            [11]  830 	push	de
+   032E 3E FF         [ 7]  831 	ld	a,#0xFF
+   0330 F5            [11]  832 	push	af
+   0331 33            [ 6]  833 	inc	sp
+   0332 C5            [11]  834 	push	bc
+   0333 CDrD5r02      [17]  835 	call	_eeprom_write
+   0336 F1            [10]  836 	pop	af
+   0337 33            [ 6]  837 	inc	sp
+   0338 D1            [10]  838 	pop	de
+   0339 C1            [10]  839 	pop	bc
+                            840 ;./include/z80eeprom.h:98: for(addr = address; addr < (address+count); addr ++)
+   033A 03            [ 6]  841 	inc	bc
+   033B 18 E9         [12]  842 	jr	00103$
+   033D                     843 00105$:
+   033D DD E1         [14]  844 	pop	ix
+   033F C9            [10]  845 	ret
+                            846 ;./include/z80eeprom.h:102: uint8_t eeprom_write_buffer(uint16_t address, uint8_t* data_buffer, uint16_t data_length){
+                            847 ;	---------------------------------
+                            848 ; Function eeprom_write_buffer
+                            849 ; ---------------------------------
+   0340                     850 _eeprom_write_buffer::
+   0340 DD E5         [15]  851 	push	ix
+   0342 DD 21 00 00   [14]  852 	ld	ix,#0
+   0346 DD 39         [15]  853 	add	ix,sp
+                            854 ;./include/z80eeprom.h:106: for (i = 0; i < data_length; i++){
+   0348 11 00 00      [10]  855 	ld	de,#0x0000
+   034B                     856 00105$:
+   034B 4B            [ 4]  857 	ld	c, e
+   034C 42            [ 4]  858 	ld	b, d
+   034D 79            [ 4]  859 	ld	a,c
+   034E DD 96 08      [19]  860 	sub	a, 8 (ix)
+   0351 78            [ 4]  861 	ld	a,b
+   0352 DD 9E 09      [19]  862 	sbc	a, 9 (ix)
+   0355 30 27         [12]  863 	jr	NC,00103$
+                            864 ;./include/z80eeprom.h:108: if(!eeprom_write(address+i, data_buffer[i]))
+   0357 DD 6E 06      [19]  865 	ld	l,6 (ix)
+   035A DD 66 07      [19]  866 	ld	h,7 (ix)
+   035D 19            [11]  867 	add	hl,de
+   035E 66            [ 7]  868 	ld	h,(hl)
+   035F DD 7E 04      [19]  869 	ld	a,4 (ix)
+   0362 81            [ 4]  870 	add	a, c
+   0363 4F            [ 4]  871 	ld	c,a
+   0364 DD 7E 05      [19]  872 	ld	a,5 (ix)
+   0367 88            [ 4]  873 	adc	a, b
+   0368 47            [ 4]  874 	ld	b,a
+   0369 D5            [11]  875 	push	de
+   036A E5            [11]  876 	push	hl
+   036B 33            [ 6]  877 	inc	sp
+   036C C5            [11]  878 	push	bc
+   036D CDrD5r02      [17]  879 	call	_eeprom_write
+   0370 F1            [10]  880 	pop	af
+   0371 33            [ 6]  881 	inc	sp
+   0372 7D            [ 4]  882 	ld	a,l
+   0373 D1            [10]  883 	pop	de
+                            884 ;./include/z80eeprom.h:109: return 0;
+   0374 B7            [ 4]  885 	or	a,a
+   0375 20 03         [12]  886 	jr	NZ,00102$
+   0377 6F            [ 4]  887 	ld	l,a
+   0378 18 0E         [12]  888 	jr	00107$
+   037A                     889 00102$:
+                            890 ;./include/z80eeprom.h:110: NOP();
+   037A 00            [ 4]  891 	NOP
+                            892 ;./include/z80eeprom.h:106: for (i = 0; i < data_length; i++){
+   037B 13            [ 6]  893 	inc	de
+   037C 18 CD         [12]  894 	jr	00105$
+   037E                     895 00103$:
+                            896 ;./include/z80eeprom.h:112: delay_ms(1000);
+   037E 21 E8 03      [10]  897 	ld	hl,#0x03E8
+   0381 E5            [11]  898 	push	hl
+   0382 CDr21r00      [17]  899 	call	_delay_ms
+   0385 F1            [10]  900 	pop	af
+                            901 ;./include/z80eeprom.h:113: return 1;
+   0386 2E 01         [ 7]  902 	ld	l,#0x01
+   0388                     903 00107$:
+   0388 DD E1         [14]  904 	pop	ix
+   038A C9            [10]  905 	ret
+                            906 ;./include/z80eeprom.h:117: void eeprom_read(uint16_t address, uint8_t* data){
+                            907 ;	---------------------------------
+                            908 ; Function eeprom_read
+                            909 ; ---------------------------------
+   038B                     910 _eeprom_read::
+                            911 ;./include/z80eeprom.h:119: if(address <= EEPROM_SIZE){
+   038B 3E FF         [ 7]  912 	ld	a,#0xFF
+   038D FD 21 02 00   [14]  913 	ld	iy,#2
+   0391 FD 39         [15]  914 	add	iy,sp
+   0393 FD BE 00      [19]  915 	cp	a, 0 (iy)
+   0396 3E 7F         [ 7]  916 	ld	a,#0x7F
+   0398 FD 9E 01      [19]  917 	sbc	a, 1 (iy)
+   039B D8            [11]  918 	ret	C
+                            919 ;./include/z80eeprom.h:122: *data = *(uint8_t*)address;
+   039C 21 04 00      [10]  920 	ld	hl, #4
+   039F 39            [11]  921 	add	hl, sp
+   03A0 5E            [ 7]  922 	ld	e, (hl)
+   03A1 23            [ 6]  923 	inc	hl
+   03A2 56            [ 7]  924 	ld	d, (hl)
+   03A3 C1            [10]  925 	pop	bc
+   03A4 E1            [10]  926 	pop	hl
+   03A5 E5            [11]  927 	push	hl
+   03A6 C5            [11]  928 	push	bc
+   03A7 7E            [ 7]  929 	ld	a,(hl)
+   03A8 12            [ 7]  930 	ld	(de),a
+   03A9 C9            [10]  931 	ret
+                            932 ;./include/z80eeprom.h:126: void eeprom_read_buffer(uint16_t address, uint8_t* data_buffer, uint16_t data_length){
+                            933 ;	---------------------------------
+                            934 ; Function eeprom_read_buffer
+                            935 ; ---------------------------------
+   03AA                     936 _eeprom_read_buffer::
+   03AA DD E5         [15]  937 	push	ix
+   03AC DD 21 00 00   [14]  938 	ld	ix,#0
+   03B0 DD 39         [15]  939 	add	ix,sp
+                            940 ;./include/z80eeprom.h:128: for (i = 0; i < data_length; i++)
+   03B2 11 00 00      [10]  941 	ld	de,#0x0000
+   03B5                     942 00103$:
+   03B5 4B            [ 4]  943 	ld	c, e
+   03B6 42            [ 4]  944 	ld	b, d
+   03B7 79            [ 4]  945 	ld	a,c
+   03B8 DD 96 08      [19]  946 	sub	a, 8 (ix)
+   03BB 78            [ 4]  947 	ld	a,b
+   03BC DD 9E 09      [19]  948 	sbc	a, 9 (ix)
+   03BF 30 1D         [12]  949 	jr	NC,00105$
+                            950 ;./include/z80eeprom.h:129: eeprom_read(address+i,data_buffer+i);
+   03C1 DD 6E 06      [19]  951 	ld	l,6 (ix)
+   03C4 DD 66 07      [19]  952 	ld	h,7 (ix)
+   03C7 19            [11]  953 	add	hl,de
+   03C8 DD 7E 04      [19]  954 	ld	a,4 (ix)
+   03CB 81            [ 4]  955 	add	a, c
+   03CC 4F            [ 4]  956 	ld	c,a
+   03CD DD 7E 05      [19]  957 	ld	a,5 (ix)
+   03D0 88            [ 4]  958 	adc	a, b
+   03D1 47            [ 4]  959 	ld	b,a
+   03D2 D5            [11]  960 	push	de
+   03D3 E5            [11]  961 	push	hl
+   03D4 C5            [11]  962 	push	bc
+   03D5 CDr8Br03      [17]  963 	call	_eeprom_read
+   03D8 F1            [10]  964 	pop	af
+   03D9 F1            [10]  965 	pop	af
+   03DA D1            [10]  966 	pop	de
+                            967 ;./include/z80eeprom.h:128: for (i = 0; i < data_length; i++)
+   03DB 13            [ 6]  968 	inc	de
+   03DC 18 D7         [12]  969 	jr	00103$
+   03DE                     970 00105$:
+   03DE DD E1         [14]  971 	pop	ix
+   03E0 C9            [10]  972 	ret
+                            973 ;./include/z80eeprom.h:133: void write_byte(uint8_t dir_alta ,uint8_t dir_baja , uint8_t dato)
+                            974 ;	---------------------------------
+                            975 ; Function write_byte
+                            976 ; ---------------------------------
+   03E1                     977 _write_byte::
+                            978 ;./include/z80eeprom.h:136: data = dato; // byte que se va a escribir
+   03E1 FD 21 04 00   [14]  979 	ld	iy,#4
+   03E5 FD 39         [15]  980 	add	iy,sp
+   03E7 FD 7E 00      [19]  981 	ld	a,0 (iy)
+   03EA FD 21r11r04   [14]  982 	ld	iy,#_data
+   03EE FD 77 00      [19]  983 	ld	0 (iy),a
+                            984 ;./include/z80eeprom.h:137: address_hight = dir_alta; // direccion en la que se va a escribir
+   03F1 FD 21 02 00   [14]  985 	ld	iy,#2
+   03F5 FD 39         [15]  986 	add	iy,sp
+   03F7 FD 7E 00      [19]  987 	ld	a,0 (iy)
+   03FA FD 21r12r04   [14]  988 	ld	iy,#_address_hight
+   03FE FD 77 00      [19]  989 	ld	0 (iy),a
+                            990 ;./include/z80eeprom.h:138: address_low= dir_baja;
+   0401 FD 21 03 00   [14]  991 	ld	iy,#3
+   0405 FD 39         [15]  992 	add	iy,sp
+   0407 FD 7E 00      [19]  993 	ld	a,0 (iy)
+   040A FD 21r13r04   [14]  994 	ld	iy,#_address_low
+   040E FD 77 00      [19]  995 	ld	0 (iy),a
+                            996 ;./include/z80eeprom.h:147: __endasm;
+   0411 3Ar12r04      [13]  997 	LD A,(_address_hight)
+   0414 67            [ 4]  998 	LD H,A
+   0415 3Ar13r04      [13]  999 	LD A,(_address_low)
+   0418 6F            [ 4] 1000 	LD L,A
+   0419 3Ar11r04      [13] 1001 	LD A,(_data)
+   041C 77            [ 7] 1002 	LD (HL), A
+                           1003 ;./include/z80eeprom.h:152: __endasm;
+   041D CD 00 B0      [17] 1004 	call 0xB000
+   0420 C9            [10] 1005 	ret
+                           1006 ;./include/packet.h:96: void packet_fill(packet_t *nuevo, uint8_t packet_type, uint8_t packet_number, uint8_t* packet_data, uint8_t data_length){
+                           1007 ;	---------------------------------
+                           1008 ; Function packet_fill
+                           1009 ; ---------------------------------
+   0421                    1010 _packet_fill::
+   0421 DD E5         [15] 1011 	push	ix
+   0423 DD 21 00 00   [14] 1012 	ld	ix,#0
+   0427 DD 39         [15] 1013 	add	ix,sp
+   0429 F5            [11] 1014 	push	af
+   042A F5            [11] 1015 	push	af
+   042B 3B            [ 6] 1016 	dec	sp
+                           1017 ;./include/packet.h:100: nuevo->mark = PACKET_MARK;
+   042C DD 5E 04      [19] 1018 	ld	e,4 (ix)
+   042F DD 56 05      [19] 1019 	ld	d,5 (ix)
+   0432 3E 3A         [ 7] 1020 	ld	a,#0x3A
+   0434 12            [ 7] 1021 	ld	(de),a
+                           1022 ;./include/packet.h:102: nuevo->data_length = data_length;
+   0435 6B            [ 4] 1023 	ld	l, e
+   0436 62            [ 4] 1024 	ld	h, d
+   0437 23            [ 6] 1025 	inc	hl
+   0438 DD 7E 0A      [19] 1026 	ld	a,10 (ix)
+   043B 77            [ 7] 1027 	ld	(hl),a
+                           1028 ;./include/packet.h:103: checksum+= data_length;
+   043C DD 7E 0A      [19] 1029 	ld	a,10 (ix)
+   043F C6 3A         [ 7] 1030 	add	a, #0x3A
+   0441 47            [ 4] 1031 	ld	b,a
+                           1032 ;./include/packet.h:104: nuevo->number = packet_number;
+   0442 6B            [ 4] 1033 	ld	l, e
+   0443 62            [ 4] 1034 	ld	h, d
+   0444 23            [ 6] 1035 	inc	hl
+   0445 23            [ 6] 1036 	inc	hl
+   0446 DD 7E 07      [19] 1037 	ld	a,7 (ix)
+   0449 77            [ 7] 1038 	ld	(hl),a
+                           1039 ;./include/packet.h:105: checksum+= packet_number;
+   044A 78            [ 4] 1040 	ld	a,b
+   044B DD 86 07      [19] 1041 	add	a, 7 (ix)
+   044E 47            [ 4] 1042 	ld	b,a
+                           1043 ;./include/packet.h:106: nuevo->type = packet_type;
+   044F 6B            [ 4] 1044 	ld	l, e
+   0450 62            [ 4] 1045 	ld	h, d
+   0451 23            [ 6] 1046 	inc	hl
+   0452 23            [ 6] 1047 	inc	hl
+   0453 23            [ 6] 1048 	inc	hl
+   0454 DD 7E 06      [19] 1049 	ld	a,6 (ix)
+   0457 77            [ 7] 1050 	ld	(hl),a
+                           1051 ;./include/packet.h:107: checksum+= packet_type;
+   0458 78            [ 4] 1052 	ld	a,b
+   0459 DD 86 06      [19] 1053 	add	a, 6 (ix)
+   045C DD 77 FD      [19] 1054 	ld	-3 (ix),a
+                           1055 ;./include/packet.h:109: for (i= 0; i < data_length; ++i)
+   045F 21 04 00      [10] 1056 	ld	hl,#0x0004
+   0462 19            [11] 1057 	add	hl,de
+   0463 E3            [19] 1058 	ex	(sp), hl
+   0464 01 00 00      [10] 1059 	ld	bc,#0x0000
+   0467                    1060 00103$:
+   0467 DD 66 0A      [19] 1061 	ld	h,10 (ix)
+   046A 2E 00         [ 7] 1062 	ld	l,#0x00
+   046C 79            [ 4] 1063 	ld	a,c
+   046D 94            [ 4] 1064 	sub	a, h
+   046E 78            [ 4] 1065 	ld	a,b
+   046F 9D            [ 4] 1066 	sbc	a, l
+   0470 E2r75r04      [10] 1067 	jp	PO, 00116$
+   0473 EE 80         [ 7] 1068 	xor	a, #0x80
+   0475                    1069 00116$:
+   0475 F2rAAr04      [10] 1070 	jp	P,00101$
+                           1071 ;./include/packet.h:111: nuevo->data[i] = packet_data[i];
+   0478 DD 7E FB      [19] 1072 	ld	a,-5 (ix)
+   047B 81            [ 4] 1073 	add	a, c
+   047C DD 77 FE      [19] 1074 	ld	-2 (ix),a
+   047F DD 7E FC      [19] 1075 	ld	a,-4 (ix)
+   0482 88            [ 4] 1076 	adc	a, b
+   0483 DD 77 FF      [19] 1077 	ld	-1 (ix),a
+   0486 E5            [11] 1078 	push	hl
+   0487 DD 6E 08      [19] 1079 	ld	l,8 (ix)
+   048A DD 66 09      [19] 1080 	ld	h,9 (ix)
+   048D E5            [11] 1081 	push	hl
+   048E FD E1         [14] 1082 	pop	iy
+   0490 E1            [10] 1083 	pop	hl
+   0491 FD 09         [15] 1084 	add	iy, bc
+   0493 FD 7E 00      [19] 1085 	ld	a, 0 (iy)
+   0496 DD 6E FE      [19] 1086 	ld	l,-2 (ix)
+   0499 DD 66 FF      [19] 1087 	ld	h,-1 (ix)
+   049C 77            [ 7] 1088 	ld	(hl),a
+                           1089 ;./include/packet.h:112: checksum+= packet_data[i];
+   049D FD 66 00      [19] 1090 	ld	h, 0 (iy)
+   04A0 DD 7E FD      [19] 1091 	ld	a,-3 (ix)
+   04A3 84            [ 4] 1092 	add	a, h
+   04A4 DD 77 FD      [19] 1093 	ld	-3 (ix),a
+                           1094 ;./include/packet.h:109: for (i= 0; i < data_length; ++i)
+   04A7 03            [ 6] 1095 	inc	bc
+   04A8 18 BD         [12] 1096 	jr	00103$
+   04AA                    1097 00101$:
+                           1098 ;./include/packet.h:115: nuevo->checksum = checksum;
+   04AA 21 03 01      [10] 1099 	ld	hl,#0x0103
+   04AD 19            [11] 1100 	add	hl,de
+   04AE DD 7E FD      [19] 1101 	ld	a,-3 (ix)
+   04B1 77            [ 7] 1102 	ld	(hl),a
+   04B2 DD F9         [10] 1103 	ld	sp, ix
+   04B4 DD E1         [14] 1104 	pop	ix
+   04B6 C9            [10] 1105 	ret
+                           1106 ;./include/packet.h:118: uint8_t packet_check(packet_t *p)
+                           1107 ;	---------------------------------
+                           1108 ; Function packet_check
+                           1109 ; ---------------------------------
+   04B7                    1110 _packet_check::
+   04B7 DD E5         [15] 1111 	push	ix
+   04B9 DD 21 00 00   [14] 1112 	ld	ix,#0
+   04BD DD 39         [15] 1113 	add	ix,sp
+   04BF F5            [11] 1114 	push	af
+   04C0 F5            [11] 1115 	push	af
+                           1116 ;./include/packet.h:123: check_sum+= p->mark;
+   04C1 DD 4E 04      [19] 1117 	ld	c,4 (ix)
+   04C4 DD 46 05      [19] 1118 	ld	b,5 (ix)
+   04C7 0A            [ 7] 1119 	ld	a,(bc)
+   04C8 57            [ 4] 1120 	ld	d,a
+                           1121 ;./include/packet.h:124: check_sum+= p->data_length;
+   04C9 69            [ 4] 1122 	ld	l, c
+   04CA 60            [ 4] 1123 	ld	h, b
+   04CB 23            [ 6] 1124 	inc	hl
+   04CC 7E            [ 7] 1125 	ld	a,(hl)
+   04CD DD 77 FD      [19] 1126 	ld	-3 (ix),a
+   04D0 7A            [ 4] 1127 	ld	a,d
+   04D1 DD 86 FD      [19] 1128 	add	a, -3 (ix)
+   04D4 57            [ 4] 1129 	ld	d,a
+                           1130 ;./include/packet.h:125: check_sum+= p->number;
+   04D5 69            [ 4] 1131 	ld	l, c
+   04D6 60            [ 4] 1132 	ld	h, b
+   04D7 23            [ 6] 1133 	inc	hl
+   04D8 23            [ 6] 1134 	inc	hl
+   04D9 66            [ 7] 1135 	ld	h,(hl)
+   04DA 7A            [ 4] 1136 	ld	a,d
+   04DB 84            [ 4] 1137 	add	a, h
+   04DC 57            [ 4] 1138 	ld	d,a
+                           1139 ;./include/packet.h:126: check_sum+= p->type;
+   04DD C5            [11] 1140 	push	bc
+   04DE FD E1         [14] 1141 	pop	iy
+   04E0 FD 66 03      [19] 1142 	ld	h,3 (iy)
+   04E3 7A            [ 4] 1143 	ld	a,d
+   04E4 84            [ 4] 1144 	add	a, h
+   04E5 DD 77 FC      [19] 1145 	ld	-4 (ix),a
+                           1146 ;./include/packet.h:128: for (i= 0; i < p->data_length; ++i)
+   04E8 21 04 00      [10] 1147 	ld	hl,#0x0004
+   04EB 09            [11] 1148 	add	hl,bc
+   04EC DD 75 FE      [19] 1149 	ld	-2 (ix),l
+   04EF DD 74 FF      [19] 1150 	ld	-1 (ix),h
+   04F2 11 00 00      [10] 1151 	ld	de,#0x0000
+   04F5                    1152 00106$:
+   04F5 DD 66 FD      [19] 1153 	ld	h,-3 (ix)
+   04F8 2E 00         [ 7] 1154 	ld	l,#0x00
+   04FA 7B            [ 4] 1155 	ld	a,e
+   04FB 94            [ 4] 1156 	sub	a, h
+   04FC 7A            [ 4] 1157 	ld	a,d
+   04FD 9D            [ 4] 1158 	sbc	a, l
+   04FE E2r03r05      [10] 1159 	jp	PO, 00123$
+   0501 EE 80         [ 7] 1160 	xor	a, #0x80
+   0503                    1161 00123$:
+   0503 F2r18r05      [10] 1162 	jp	P,00101$
+                           1163 ;./include/packet.h:129: check_sum+= p->data[i];
+   0506 DD 6E FE      [19] 1164 	ld	l,-2 (ix)
+   0509 DD 66 FF      [19] 1165 	ld	h,-1 (ix)
+   050C 19            [11] 1166 	add	hl,de
+   050D 66            [ 7] 1167 	ld	h,(hl)
+   050E DD 7E FC      [19] 1168 	ld	a,-4 (ix)
+   0511 84            [ 4] 1169 	add	a, h
+   0512 DD 77 FC      [19] 1170 	ld	-4 (ix),a
+                           1171 ;./include/packet.h:128: for (i= 0; i < p->data_length; ++i)
+   0515 13            [ 6] 1172 	inc	de
+   0516 18 DD         [12] 1173 	jr	00106$
+   0518                    1174 00101$:
+                           1175 ;./include/packet.h:132: if(check_sum == p->checksum)
+   0518 69            [ 4] 1176 	ld	l, c
+   0519 60            [ 4] 1177 	ld	h, b
+   051A 11 03 01      [10] 1178 	ld	de, #0x0103
+   051D 19            [11] 1179 	add	hl, de
+   051E DD 7E FC      [19] 1180 	ld	a,-4 (ix)
+   0521 96            [ 7] 1181 	sub	a,(hl)
+   0522 20 04         [12] 1182 	jr	NZ,00103$
+                           1183 ;./include/packet.h:133: return 1;
+   0524 2E 01         [ 7] 1184 	ld	l,#0x01
+   0526 18 02         [12] 1185 	jr	00108$
+   0528                    1186 00103$:
+                           1187 ;./include/packet.h:135: return 0;
+   0528 2E 00         [ 7] 1188 	ld	l,#0x00
+   052A                    1189 00108$:
+   052A DD F9         [10] 1190 	ld	sp, ix
+   052C DD E1         [14] 1191 	pop	ix
+   052E C9            [10] 1192 	ret
+                           1193 ;./include/packet.h:138: uint8_t packet_read(packet_t *nuevo)
+                           1194 ;	---------------------------------
+                           1195 ; Function packet_read
+                           1196 ; ---------------------------------
+   052F                    1197 _packet_read::
+   052F DD E5         [15] 1198 	push	ix
+   0531 DD 21 00 00   [14] 1199 	ld	ix,#0
+   0535 DD 39         [15] 1200 	add	ix,sp
+   0537 F5            [11] 1201 	push	af
+   0538 F5            [11] 1202 	push	af
+                           1203 ;./include/packet.h:148: while((c=uart_read()) != PACKET_MARK)
+   0539 01 00 00      [10] 1204 	ld	bc,#0x0000
+   053C                    1205 00103$:
+   053C C5            [11] 1206 	push	bc
+   053D CDr24r01      [17] 1207 	call	_uart_read
+   0540 7D            [ 4] 1208 	ld	a,l
+   0541 C1            [10] 1209 	pop	bc
+   0542 5F            [ 4] 1210 	ld	e,a
+   0543 D6 3A         [ 7] 1211 	sub	a, #0x3A
+   0545 28 10         [12] 1212 	jr	Z,00105$
+                           1213 ;./include/packet.h:150: intent_count++;
+   0547 03            [ 6] 1214 	inc	bc
+                           1215 ;./include/packet.h:151: if(intent_count>=MAX_PACKET_READ_INTENTS)
+   0548 79            [ 4] 1216 	ld	a,c
+   0549 D6 32         [ 7] 1217 	sub	a, #0x32
+   054B 78            [ 4] 1218 	ld	a,b
+   054C 17            [ 4] 1219 	rla
+   054D 3F            [ 4] 1220 	ccf
+   054E 1F            [ 4] 1221 	rra
+   054F DE 80         [ 7] 1222 	sbc	a, #0x80
+   0551 38 E9         [12] 1223 	jr	C,00103$
+                           1224 ;./include/packet.h:152: return 0;
+   0553 2E 00         [ 7] 1225 	ld	l,#0x00
+   0555 18 75         [12] 1226 	jr	00110$
+   0557                    1227 00105$:
+                           1228 ;./include/packet.h:154: nuevo->mark = c;                    // Asigna marca a paquete
+   0557 DD 4E 04      [19] 1229 	ld	c,4 (ix)
+   055A DD 46 05      [19] 1230 	ld	b,5 (ix)
+   055D 7B            [ 4] 1231 	ld	a,e
+   055E 02            [ 7] 1232 	ld	(bc),a
+                           1233 ;./include/packet.h:155: nuevo->data_length =uart_read();   // Lee numero de datos que contiene el paquete.
+   055F 21 01 00      [10] 1234 	ld	hl,#0x0001
+   0562 09            [11] 1235 	add	hl,bc
+   0563 DD 75 FE      [19] 1236 	ld	-2 (ix),l
+   0566 DD 74 FF      [19] 1237 	ld	-1 (ix),h
+   0569 C5            [11] 1238 	push	bc
+   056A CDr24r01      [17] 1239 	call	_uart_read
+   056D 7D            [ 4] 1240 	ld	a,l
+   056E C1            [10] 1241 	pop	bc
+   056F DD 6E FE      [19] 1242 	ld	l,-2 (ix)
+   0572 DD 66 FF      [19] 1243 	ld	h,-1 (ix)
+   0575 77            [ 7] 1244 	ld	(hl),a
+                           1245 ;./include/packet.h:156: nuevo->number=uart_read();     // Lee el numero de paquete
+   0576 69            [ 4] 1246 	ld	l, c
+   0577 60            [ 4] 1247 	ld	h, b
+   0578 23            [ 6] 1248 	inc	hl
+   0579 23            [ 6] 1249 	inc	hl
+   057A E5            [11] 1250 	push	hl
+   057B C5            [11] 1251 	push	bc
+   057C CDr24r01      [17] 1252 	call	_uart_read
+   057F 7D            [ 4] 1253 	ld	a,l
+   0580 C1            [10] 1254 	pop	bc
+   0581 E1            [10] 1255 	pop	hl
+   0582 77            [ 7] 1256 	ld	(hl),a
+                           1257 ;./include/packet.h:157: nuevo->type=uart_read();     // Lee tipo de paquete.
+   0583 69            [ 4] 1258 	ld	l, c
+   0584 60            [ 4] 1259 	ld	h, b
+   0585 23            [ 6] 1260 	inc	hl
+   0586 23            [ 6] 1261 	inc	hl
+   0587 23            [ 6] 1262 	inc	hl
+   0588 E5            [11] 1263 	push	hl
+   0589 C5            [11] 1264 	push	bc
+   058A CDr24r01      [17] 1265 	call	_uart_read
+   058D 7D            [ 4] 1266 	ld	a,l
+   058E C1            [10] 1267 	pop	bc
+   058F E1            [10] 1268 	pop	hl
+   0590 77            [ 7] 1269 	ld	(hl),a
+                           1270 ;./include/packet.h:158: for(i= 0; i< nuevo->data_length; i++)
+   0591 21 04 00      [10] 1271 	ld	hl,#0x0004
+   0594 09            [11] 1272 	add	hl,bc
+   0595 E3            [19] 1273 	ex	(sp), hl
+   0596 11 00 00      [10] 1274 	ld	de,#0x0000
+   0599                    1275 00108$:
+   0599 DD 6E FE      [19] 1276 	ld	l,-2 (ix)
+   059C DD 66 FF      [19] 1277 	ld	h,-1 (ix)
+   059F 66            [ 7] 1278 	ld	h,(hl)
+   05A0 2E 00         [ 7] 1279 	ld	l,#0x00
+   05A2 7B            [ 4] 1280 	ld	a,e
+   05A3 94            [ 4] 1281 	sub	a, h
+   05A4 7A            [ 4] 1282 	ld	a,d
+   05A5 9D            [ 4] 1283 	sbc	a, l
+   05A6 E2rABr05      [10] 1284 	jp	PO, 00134$
+   05A9 EE 80         [ 7] 1285 	xor	a, #0x80
+   05AB                    1286 00134$:
+   05AB F2rBFr05      [10] 1287 	jp	P,00106$
+                           1288 ;./include/packet.h:160: nuevo->data[i]=uart_read(); // Lee los datos del paquete.
+   05AE E1            [10] 1289 	pop	hl
+   05AF E5            [11] 1290 	push	hl
+   05B0 19            [11] 1291 	add	hl,de
+   05B1 E5            [11] 1292 	push	hl
+   05B2 C5            [11] 1293 	push	bc
+   05B3 D5            [11] 1294 	push	de
+   05B4 CDr24r01      [17] 1295 	call	_uart_read
+   05B7 7D            [ 4] 1296 	ld	a,l
+   05B8 D1            [10] 1297 	pop	de
+   05B9 C1            [10] 1298 	pop	bc
+   05BA E1            [10] 1299 	pop	hl
+   05BB 77            [ 7] 1300 	ld	(hl),a
+                           1301 ;./include/packet.h:158: for(i= 0; i< nuevo->data_length; i++)
+   05BC 13            [ 6] 1302 	inc	de
+   05BD 18 DA         [12] 1303 	jr	00108$
+   05BF                    1304 00106$:
+                           1305 ;./include/packet.h:162: nuevo->checksum = uart_read();      // Lee el checksum de el paquete.
+   05BF 21 03 01      [10] 1306 	ld	hl,#0x0103
+   05C2 09            [11] 1307 	add	hl,bc
+   05C3 E5            [11] 1308 	push	hl
+   05C4 CDr24r01      [17] 1309 	call	_uart_read
+   05C7 7D            [ 4] 1310 	ld	a,l
+   05C8 E1            [10] 1311 	pop	hl
+   05C9 77            [ 7] 1312 	ld	(hl),a
+                           1313 ;./include/packet.h:163: return 1;
+   05CA 2E 01         [ 7] 1314 	ld	l,#0x01
+   05CC                    1315 00110$:
+   05CC DD F9         [10] 1316 	ld	sp, ix
+   05CE DD E1         [14] 1317 	pop	ix
+   05D0 C9            [10] 1318 	ret
+                           1319 ;./include/packet.h:166: void packet_send(packet_t *p){
+                           1320 ;	---------------------------------
+                           1321 ; Function packet_send
+                           1322 ; ---------------------------------
+   05D1                    1323 _packet_send::
+   05D1 DD E5         [15] 1324 	push	ix
+   05D3 DD 21 00 00   [14] 1325 	ld	ix,#0
+   05D7 DD 39         [15] 1326 	add	ix,sp
+                           1327 ;./include/packet.h:168: uart_write(p->mark);            // Envía la marca.
+   05D9 DD 5E 04      [19] 1328 	ld	e,4 (ix)
+   05DC DD 56 05      [19] 1329 	ld	d,5 (ix)
+   05DF 1A            [ 7] 1330 	ld	a,(de)
+   05E0 D5            [11] 1331 	push	de
+   05E1 F5            [11] 1332 	push	af
+   05E2 33            [ 6] 1333 	inc	sp
+   05E3 CDrECr00      [17] 1334 	call	_uart_write
+   05E6 33            [ 6] 1335 	inc	sp
+   05E7 D1            [10] 1336 	pop	de
+                           1337 ;./include/packet.h:169: uart_write(p->data_length);     // Envia el tamaño de datos.
+   05E8 4B            [ 4] 1338 	ld	c, e
+   05E9 42            [ 4] 1339 	ld	b, d
+   05EA 03            [ 6] 1340 	inc	bc
+   05EB 0A            [ 7] 1341 	ld	a,(bc)
+   05EC C5            [11] 1342 	push	bc
+   05ED D5            [11] 1343 	push	de
+   05EE F5            [11] 1344 	push	af
+   05EF 33            [ 6] 1345 	inc	sp
+   05F0 CDrECr00      [17] 1346 	call	_uart_write
+   05F3 33            [ 6] 1347 	inc	sp
+   05F4 D1            [10] 1348 	pop	de
+   05F5 C1            [10] 1349 	pop	bc
+                           1350 ;./include/packet.h:170: uart_write(p->number);      // Envía el número de paquete.
+   05F6 6B            [ 4] 1351 	ld	l, e
+   05F7 62            [ 4] 1352 	ld	h, d
+   05F8 23            [ 6] 1353 	inc	hl
+   05F9 23            [ 6] 1354 	inc	hl
+   05FA 66            [ 7] 1355 	ld	h,(hl)
+   05FB C5            [11] 1356 	push	bc
+   05FC D5            [11] 1357 	push	de
+   05FD E5            [11] 1358 	push	hl
+   05FE 33            [ 6] 1359 	inc	sp
+   05FF CDrECr00      [17] 1360 	call	_uart_write
+   0602 33            [ 6] 1361 	inc	sp
+   0603 D1            [10] 1362 	pop	de
+   0604 C1            [10] 1363 	pop	bc
+                           1364 ;./include/packet.h:171: uart_write(p->type);     // Envía el tipo de paquete.
+   0605 D5            [11] 1365 	push	de
+   0606 FD E1         [14] 1366 	pop	iy
+   0608 FD 66 03      [19] 1367 	ld	h,3 (iy)
+   060B C5            [11] 1368 	push	bc
+   060C D5            [11] 1369 	push	de
+   060D E5            [11] 1370 	push	hl
+   060E 33            [ 6] 1371 	inc	sp
+   060F CDrECr00      [17] 1372 	call	_uart_write
+   0612 33            [ 6] 1373 	inc	sp
+   0613 D1            [10] 1374 	pop	de
+   0614 C1            [10] 1375 	pop	bc
+                           1376 ;./include/packet.h:172: uart_write_buffer(p->data, p->data_length); // Envia los datos del paquete.
+   0615 0A            [ 7] 1377 	ld	a,(bc)
+   0616 4F            [ 4] 1378 	ld	c,a
+   0617 06 00         [ 7] 1379 	ld	b,#0x00
+   0619 21 04 00      [10] 1380 	ld	hl,#0x0004
+   061C 19            [11] 1381 	add	hl,de
+   061D D5            [11] 1382 	push	de
+   061E C5            [11] 1383 	push	bc
+   061F E5            [11] 1384 	push	hl
+   0620 CDrFDr00      [17] 1385 	call	_uart_write_buffer
+   0623 F1            [10] 1386 	pop	af
+   0624 F1            [10] 1387 	pop	af
+                           1388 ;./include/packet.h:173: uart_write(p->checksum);        // Envia el checksum del paquete.
+   0625 E1            [10] 1389 	pop	hl
+   0626 11 03 01      [10] 1390 	ld	de, #0x0103
+   0629 19            [11] 1391 	add	hl, de
+   062A 66            [ 7] 1392 	ld	h,(hl)
+   062B E5            [11] 1393 	push	hl
+   062C 33            [ 6] 1394 	inc	sp
+   062D CDrECr00      [17] 1395 	call	_uart_write
+   0630 33            [ 6] 1396 	inc	sp
+   0631 DD E1         [14] 1397 	pop	ix
+   0633 C9            [10] 1398 	ret
+                           1399 ;./include/z80bootloader.h:75: void bootloader_init(){
+                           1400 ;	---------------------------------
+                           1401 ; Function bootloader_init
+                           1402 ; ---------------------------------
+   0634                    1403 _bootloader_init::
+   0634 F5            [11] 1404 	push	af
+   0635 F5            [11] 1405 	push	af
+                           1406 ;./include/z80bootloader.h:82: uart_config.divisor    =  UART_MR ;   // divisor x64.
+   0636 21 00 00      [10] 1407 	ld	hl,#0x0000
+   0639 39            [11] 1408 	add	hl,sp
+   063A 36 03         [10] 1409 	ld	(hl),#0x03
+                           1410 ;./include/z80bootloader.h:85: uart_init(&uart_config);
+   063C 21 00 00      [10] 1411 	ld	hl,#0x0000
+   063F 39            [11] 1412 	add	hl,sp
+   0640 5D            [ 4] 1413 	ld	e,l
+   0641 54            [ 4] 1414 	ld	d,h
+   0642 D5            [11] 1415 	push	de
+   0643 E5            [11] 1416 	push	hl
+   0644 CDrC4r00      [17] 1417 	call	_uart_init
+   0647 21 F4 01      [10] 1418 	ld	hl, #0x01F4
+   064A E3            [19] 1419 	ex	(sp),hl
+   064B CDr21r00      [17] 1420 	call	_delay_ms
+   064E F1            [10] 1421 	pop	af
+   064F D1            [10] 1422 	pop	de
+                           1423 ;./include/z80bootloader.h:88: uart_config.configuracionDePalabra   = UART_8BITS_1STOPBIT;     // 1 bit de parada, 8 bits por palabra.
+   0650 6B            [ 4] 1424 	ld	l, e
+   0651 62            [ 4] 1425 	ld	h, d
+   0652 23            [ 6] 1426 	inc	hl
+   0653 36 14         [10] 1427 	ld	(hl),#0x14
+                           1428 ;./include/z80bootloader.h:89: uart_config.interrupcionesDelReceptor      = UART_RECIVE_INTERRUPT_ENABLE;     // interrupcion de recepcion 
+   0655 6B            [ 4] 1429 	ld	l, e
+   0656 62            [ 4] 1430 	ld	h, d
+   0657 23            [ 6] 1431 	inc	hl
+   0658 23            [ 6] 1432 	inc	hl
+   0659 23            [ 6] 1433 	inc	hl
+   065A 36 80         [10] 1434 	ld	(hl),#0x80
+                           1435 ;./include/z80bootloader.h:90: uart_config.interrupcionesDelTransmisor =  UART_TRANSMIT_INTERRUPT_DISABLE_RTS_LOW;   // Dato de 8 bits
+   065C 6B            [ 4] 1436 	ld	l, e
+   065D 62            [ 4] 1437 	ld	h, d
+   065E 23            [ 6] 1438 	inc	hl
+   065F 23            [ 6] 1439 	inc	hl
+   0660 36 00         [10] 1440 	ld	(hl),#0x00
+                           1441 ;./include/z80bootloader.h:91: uart_config.divisor = UART_DIV_64;
+   0662 3E 02         [ 7] 1442 	ld	a,#0x02
+   0664 12            [ 7] 1443 	ld	(de),a
+                           1444 ;./include/z80bootloader.h:93: uart_init(&uart_config);
+   0665 D5            [11] 1445 	push	de
+   0666 CDrC4r00      [17] 1446 	call	_uart_init
+   0669 F1            [10] 1447 	pop	af
+                           1448 ;./include/z80bootloader.h:97: old_app_int_isr_addr = *ptr_int_isr;    
+   066A 2Ar00r00      [16] 1449 	ld	hl,(_ptr_int_isr)
+   066D 7E            [ 7] 1450 	ld	a,(hl)
+   066E FD 21r16r04   [14] 1451 	ld	iy,#_old_app_int_isr_addr
+   0672 FD 77 00      [19] 1452 	ld	0 (iy),a
+   0675 23            [ 6] 1453 	inc	hl
+   0676 7E            [ 7] 1454 	ld	a,(hl)
+   0677 32r17r04      [13] 1455 	ld	(#_old_app_int_isr_addr + 1),a
+                           1456 ;./include/z80bootloader.h:98: old_app_int_isr_addr_l = *ptr_int_isr_l; 
+   067A 2Ar02r00      [16] 1457 	ld	hl,(_ptr_int_isr_l)
+   067D 7E            [ 7] 1458 	ld	a,(hl)
+   067E 32r18r04      [13] 1459 	ld	(#_old_app_int_isr_addr_l + 0),a
+                           1460 ;./include/z80bootloader.h:99: old_app_int_isr_addr_h = *ptr_int_isr_h;  
+   0681 2Ar04r00      [16] 1461 	ld	hl,(_ptr_int_isr_h)
+   0684 7E            [ 7] 1462 	ld	a,(hl)
+   0685 32r19r04      [13] 1463 	ld	(#_old_app_int_isr_addr_h + 0),a
+                           1464 ;./include/z80bootloader.h:100: old_app_nmi_isr_addr = *ptr_nmi_isr;    
+   0688 2Ar06r00      [16] 1465 	ld	hl,(_ptr_nmi_isr)
+   068B 7E            [ 7] 1466 	ld	a,(hl)
+   068C FD 21r1Ar04   [14] 1467 	ld	iy,#_old_app_nmi_isr_addr
+   0690 FD 77 00      [19] 1468 	ld	0 (iy),a
+   0693 23            [ 6] 1469 	inc	hl
+   0694 7E            [ 7] 1470 	ld	a,(hl)
+   0695 32r1Br04      [13] 1471 	ld	(#_old_app_nmi_isr_addr + 1),a
+                           1472 ;./include/z80bootloader.h:101: old_app_nmi_isr_addr_l = *ptr_nmi_isr_l; 
+   0698 2Ar08r00      [16] 1473 	ld	hl,(_ptr_nmi_isr_l)
+   069B 7E            [ 7] 1474 	ld	a,(hl)
+   069C 32r1Cr04      [13] 1475 	ld	(#_old_app_nmi_isr_addr_l + 0),a
+                           1476 ;./include/z80bootloader.h:102: old_app_nmi_isr_addr_h = *ptr_nmi_isr_h;    
+   069F 2Ar0Ar00      [16] 1477 	ld	hl,(_ptr_nmi_isr_h)
+   06A2 7E            [ 7] 1478 	ld	a,(hl)
+   06A3 32r1Dr04      [13] 1479 	ld	(#_old_app_nmi_isr_addr_h + 0),a
+                           1480 ;./include/z80bootloader.h:105: eeprom_write((uint16_t)(ptr_int_isr_l),(uint8_t)&uart_interrupt_isr);
+   06A6 06rCE         [ 7] 1481 	ld	b,#<(_uart_interrupt_isr)
+   06A8 ED 5Br02r00   [20] 1482 	ld	de,(_ptr_int_isr_l)
+   06AC C5            [11] 1483 	push	bc
+   06AD 33            [ 6] 1484 	inc	sp
+   06AE D5            [11] 1485 	push	de
+   06AF CDrD5r02      [17] 1486 	call	_eeprom_write
+   06B2 F1            [10] 1487 	pop	af
+   06B3 33            [ 6] 1488 	inc	sp
+                           1489 ;./include/z80bootloader.h:106: eeprom_write((uint16_t)ptr_int_isr_h,(uint8_t)((uint16_t)(&uart_interrupt_isr)>> 8));
+   06B4 21rCEr01      [10] 1490 	ld	hl,#_uart_interrupt_isr
+   06B7 7C            [ 4] 1491 	ld	a, h
+   06B8 2Ar04r00      [16] 1492 	ld	hl, (_ptr_int_isr_h)
+   06BB F5            [11] 1493 	push	af
+   06BC 33            [ 6] 1494 	inc	sp
+   06BD E5            [11] 1495 	push	hl
+   06BE CDrD5r02      [17] 1496 	call	_eeprom_write
+   06C1 F1            [10] 1497 	pop	af
+   06C2 33            [ 6] 1498 	inc	sp
+                           1499 ;./include/z80bootloader.h:107: IM(1);  // Modo de interrupción 1
+   06C3 ED 56         [ 8] 1500 	IM 1 
+                           1501 ;./include/z80bootloader.h:108: EI();   // Habilita interrupciones.
+   06C5 FB            [ 4] 1502 	EI
+   06C6 F1            [10] 1503 	pop	af
+   06C7 F1            [10] 1504 	pop	af
+   06C8 C9            [10] 1505 	ret
+                           1506 ;./include/z80bootloader.h:111: uint8_t bootloader_check_program_commnad(){
+                           1507 ;	---------------------------------
+                           1508 ; Function bootloader_check_program_commnad
+                           1509 ; ---------------------------------
+   06C9                    1510 _bootloader_check_program_commnad::
+                           1511 ;./include/z80bootloader.h:118: while(1){
+   06C9 11 00 00      [10] 1512 	ld	de,#0x0000
+   06CC                    1513 00108$:
+                           1514 ;./include/z80bootloader.h:121: if(uart_available()){
+   06CC D5            [11] 1515 	push	de
+   06CD CDrA1r01      [17] 1516 	call	_uart_available
+   06D0 D1            [10] 1517 	pop	de
+   06D1 7C            [ 4] 1518 	ld	a,h
+   06D2 B5            [ 4] 1519 	or	a,l
+   06D3 28 0D         [12] 1520 	jr	Z,00104$
+                           1521 ;./include/z80bootloader.h:123: if(uart_read() == BOOTLOADER_PROGRAM_COMMAND)
+   06D5 D5            [11] 1522 	push	de
+   06D6 CDr24r01      [17] 1523 	call	_uart_read
+   06D9 7D            [ 4] 1524 	ld	a,l
+   06DA D1            [10] 1525 	pop	de
+   06DB D6 40         [ 7] 1526 	sub	a, #0x40
+   06DD 20 03         [12] 1527 	jr	NZ,00104$
+                           1528 ;./include/z80bootloader.h:126: return 1;
+   06DF 2E 01         [ 7] 1529 	ld	l,#0x01
+   06E1 C9            [10] 1530 	ret
+   06E2                    1531 00104$:
+                           1532 ;./include/z80bootloader.h:130: delay_ms(1);
+   06E2 D5            [11] 1533 	push	de
+   06E3 21 01 00      [10] 1534 	ld	hl,#0x0001
+   06E6 E5            [11] 1535 	push	hl
+   06E7 CDr21r00      [17] 1536 	call	_delay_ms
+   06EA F1            [10] 1537 	pop	af
+   06EB D1            [10] 1538 	pop	de
+                           1539 ;./include/z80bootloader.h:132: time_spend+=1;
+   06EC 13            [ 6] 1540 	inc	de
+                           1541 ;./include/z80bootloader.h:136: if(time_spend >= BOOTLOADER_PROGRAM_COMMAND_TIMEOUT)
+   06ED 7B            [ 4] 1542 	ld	a,e
+   06EE D6 20         [ 7] 1543 	sub	a, #0x20
+   06F0 7A            [ 4] 1544 	ld	a,d
+   06F1 17            [ 4] 1545 	rla
+   06F2 3F            [ 4] 1546 	ccf
+   06F3 1F            [ 4] 1547 	rra
+   06F4 DE 83         [ 7] 1548 	sbc	a, #0x83
+   06F6 38 D4         [12] 1549 	jr	C,00108$
+                           1550 ;./include/z80bootloader.h:137: return 0;
+   06F8 2E 00         [ 7] 1551 	ld	l,#0x00
+   06FA C9            [10] 1552 	ret
+                           1553 ;./include/z80bootloader.h:142: int bootloader_run(){
+                           1554 ;	---------------------------------
+                           1555 ; Function bootloader_run
+                           1556 ; ---------------------------------
+   06FB                    1557 _bootloader_run::
+   06FB DD E5         [15] 1558 	push	ix
+   06FD DD 21 00 00   [14] 1559 	ld	ix,#0
+   0701 DD 39         [15] 1560 	add	ix,sp
+   0703 21 FA BF      [10] 1561 	ld	hl,#-16390
+   0706 39            [11] 1562 	add	hl,sp
+   0707 F9            [ 6] 1563 	ld	sp,hl
+                           1564 ;./include/z80bootloader.h:144: uint8_t is_exit=0;
+   0708 DD 36 FD 00   [19] 1565 	ld	-3 (ix),#0x00
+                           1566 ;./include/z80bootloader.h:145: uint8_t intent_count=0;
+   070C FD 21 00 00   [14] 1567 	ld	iy,#0
+   0710 FD 39         [15] 1568 	add	iy,sp
+   0712 FD 36 00 00   [19] 1569 	ld	0 (iy),#0x00
+                           1570 ;./include/z80bootloader.h:149: int mem_buffer_index=0;
+   0716 21 01 00      [10] 1571 	ld	hl, #1
+   0719 39            [11] 1572 	add	hl, sp
+   071A AF            [ 4] 1573 	xor	a, a
+   071B 77            [ 7] 1574 	ld	(hl), a
+   071C 23            [ 6] 1575 	inc	hl
+   071D 77            [ 7] 1576 	ld	(hl), a
+                           1577 ;./include/z80bootloader.h:150: delay_ms(300);
+   071E 21 2C 01      [10] 1578 	ld	hl,#0x012C
+   0721 E5            [11] 1579 	push	hl
+   0722 CDr21r00      [17] 1580 	call	_delay_ms
+   0725 F1            [10] 1581 	pop	af
+                           1582 ;./include/z80bootloader.h:152: while(is_exit==0) 
+   0726 21 03 00      [10] 1583 	ld	hl,#0x0003
+   0729 39            [11] 1584 	add	hl,sp
+   072A DD 75 FE      [19] 1585 	ld	-2 (ix),l
+   072D DD 74 FF      [19] 1586 	ld	-1 (ix),h
+   0730                    1587 00131$:
+   0730 DD 7E FD      [19] 1588 	ld	a,-3 (ix)
+   0733 B7            [ 4] 1589 	or	a, a
+   0734 C2rC6r08      [10] 1590 	jp	NZ,00133$
+                           1591 ;./include/z80bootloader.h:156: if(packet_read(&pkg_in))
+   0737 21r1Er04      [10] 1592 	ld	hl,#_pkg_in
+   073A E5            [11] 1593 	push	hl
+   073B CDr2Fr05      [17] 1594 	call	_packet_read
+   073E F1            [10] 1595 	pop	af
+   073F 7D            [ 4] 1596 	ld	a,l
+   0740 B7            [ 4] 1597 	or	a, a
+   0741 CArB0r08      [10] 1598 	jp	Z,00129$
+                           1599 ;./include/z80bootloader.h:158: intent_count=0;
+   0744 FD 21 00 00   [14] 1600 	ld	iy,#0
+   0748 FD 39         [15] 1601 	add	iy,sp
+   074A FD 36 00 00   [19] 1602 	ld	0 (iy),#0x00
+                           1603 ;./include/z80bootloader.h:160: if(packet_check(&pkg_in) == 0){
+   074E 21r1Er04      [10] 1604 	ld	hl,#_pkg_in+0
+   0751 E5            [11] 1605 	push	hl
+   0752 CDrB7r04      [17] 1606 	call	_packet_check
+   0755 F1            [10] 1607 	pop	af
+   0756 7D            [ 4] 1608 	ld	a,l
+   0757 B7            [ 4] 1609 	or	a, a
+   0758 20 28         [12] 1610 	jr	NZ,00124$
+                           1611 ;./include/z80bootloader.h:162: packet_fill(&pkg_out, PACKET_TYPE_NAK,pkg_in.number, NULL, 0);
+   075A 21r20r04      [10] 1612 	ld	hl, #(_pkg_in + 0x0002) + 0
+   075D 4E            [ 7] 1613 	ld	c,(hl)
+   075E 11r22r05      [10] 1614 	ld	de,#_pkg_out
+   0761 AF            [ 4] 1615 	xor	a, a
+   0762 F5            [11] 1616 	push	af
+   0763 33            [ 6] 1617 	inc	sp
+   0764 21 00 00      [10] 1618 	ld	hl,#0x0000
+   0767 E5            [11] 1619 	push	hl
+   0768 41            [ 4] 1620 	ld	b, c
+   0769 0E 4E         [ 7] 1621 	ld	c,#0x4E
+   076B C5            [11] 1622 	push	bc
+   076C D5            [11] 1623 	push	de
+   076D CDr21r04      [17] 1624 	call	_packet_fill
+   0770 21 07 00      [10] 1625 	ld	hl,#7
+   0773 39            [11] 1626 	add	hl,sp
+   0774 F9            [ 6] 1627 	ld	sp,hl
+                           1628 ;./include/z80bootloader.h:164: packet_send(&pkg_out);
+   0775 21r22r05      [10] 1629 	ld	hl,#_pkg_out
+   0778 E5            [11] 1630 	push	hl
+   0779 CDrD1r05      [17] 1631 	call	_packet_send
+   077C F1            [10] 1632 	pop	af
+                           1633 ;./include/z80bootloader.h:165: uart_flush();
+   077D CDrC2r01      [17] 1634 	call	_uart_flush
+   0780 18 AE         [12] 1635 	jr	00131$
+   0782                    1636 00124$:
+                           1637 ;./include/z80bootloader.h:170: packet_fill(&pkg_out, PACKET_TYPE_ACK, pkg_in.number, NULL, 0);
+   0782 21r20r04      [10] 1638 	ld	hl,#_pkg_in+2
+   0785 56            [ 7] 1639 	ld	d,(hl)
+   0786 01r22r05      [10] 1640 	ld	bc,#_pkg_out+0
+   0789 AF            [ 4] 1641 	xor	a, a
+   078A F5            [11] 1642 	push	af
+   078B 33            [ 6] 1643 	inc	sp
+   078C 21 00 00      [10] 1644 	ld	hl,#0x0000
+   078F E5            [11] 1645 	push	hl
+   0790 1E 41         [ 7] 1646 	ld	e, #0x41
+   0792 D5            [11] 1647 	push	de
+   0793 C5            [11] 1648 	push	bc
+   0794 CDr21r04      [17] 1649 	call	_packet_fill
+   0797 21 07 00      [10] 1650 	ld	hl,#7
+   079A 39            [11] 1651 	add	hl,sp
+   079B F9            [ 6] 1652 	ld	sp,hl
+                           1653 ;./include/z80bootloader.h:171: uart_flush();
+   079C CDrC2r01      [17] 1654 	call	_uart_flush
+                           1655 ;./include/z80bootloader.h:174: switch(pkg_in.type){
+   079F 3Ar21r04      [13] 1656 	ld	a,(#_pkg_in+3)
+   07A2 FE 44         [ 7] 1657 	cp	a,#0x44
+   07A4 28 4B         [12] 1658 	jr	Z,00109$
+   07A6 FE 46         [ 7] 1659 	cp	a,#0x46
+   07A8 CAr78r08      [10] 1660 	jp	Z,00119$
+   07AB FE 53         [ 7] 1661 	cp	a,#0x53
+   07AD 28 08         [12] 1662 	jr	Z,00101$
+   07AF D6 5A         [ 7] 1663 	sub	a, #0x5A
+   07B1 CAr72r08      [10] 1664 	jp	Z,00118$
+   07B4 C3rA5r08      [10] 1665 	jp	00122$
+                           1666 ;./include/z80bootloader.h:175: case PACKET_TYPE_ADDRES: // Si es paquete de direccion.
+   07B7                    1667 00101$:
+                           1668 ;./include/z80bootloader.h:180: if(INT_ISR_ADDR == pkg_in.data[1] && INT_ISR_ADDR>>8 == pkg_in.data[0])
+   07B7 3Ar23r04      [13] 1669 	ld	a,(#_pkg_in+5)
+   07BA D6 38         [ 7] 1670 	sub	a, #0x38
+   07BC 20 15         [12] 1671 	jr	NZ,00106$
+   07BE 3Ar22r04      [13] 1672 	ld	a, (#(_pkg_in + 0x0004) + 0)
+   07C1 B7            [ 4] 1673 	or	a, a
+   07C2 20 0F         [12] 1674 	jr	NZ,00106$
+                           1675 ;./include/z80bootloader.h:183: aux_address_l= pkg_in.data[1];
+   07C4 3Ar23r04      [13] 1676 	ld	a,(#_pkg_in+5)
+   07C7 32r14r04      [13] 1677 	ld	(#_aux_address_l + 0),a
+                           1678 ;./include/z80bootloader.h:184: aux_address_h= pkg_in.data[0];
+   07CA 3Ar22r04      [13] 1679 	ld	a,(#_pkg_in+4)
+   07CD 32r15r04      [13] 1680 	ld	(#_aux_address_h + 0),a
+   07D0 C3rA5r08      [10] 1681 	jp	00122$
+   07D3                    1682 00106$:
+                           1683 ;./include/z80bootloader.h:187: if(NMI_ISR_ADDR == pkg_in.data[1] && NMI_ISR_ADDR>>8 == pkg_in.data[0]){
+   07D3 3Ar23r04      [13] 1684 	ld	a,(#_pkg_in+5)
+   07D6 D6 66         [ 7] 1685 	sub	a, #0x66
+   07D8 C2rA5r08      [10] 1686 	jp	NZ,00122$
+   07DB 3Ar22r04      [13] 1687 	ld	a, (#(_pkg_in + 0x0004) + 0)
+   07DE B7            [ 4] 1688 	or	a, a
+   07DF C2rA5r08      [10] 1689 	jp	NZ,00122$
+                           1690 ;./include/z80bootloader.h:189: aux_address_l= pkg_in.data[1];
+   07E2 3Ar23r04      [13] 1691 	ld	a,(#_pkg_in+5)
+   07E5 32r14r04      [13] 1692 	ld	(#_aux_address_l + 0),a
+                           1693 ;./include/z80bootloader.h:190: aux_address_h= pkg_in.data[0];
+   07E8 3Ar22r04      [13] 1694 	ld	a,(#_pkg_in+4)
+   07EB 32r15r04      [13] 1695 	ld	(#_aux_address_h + 0),a
+                           1696 ;./include/z80bootloader.h:193: break;
+   07EE C3rA5r08      [10] 1697 	jp	00122$
+                           1698 ;./include/z80bootloader.h:194: case PACKET_TYPE_DATA:  // Si es paquete de datos.
+   07F1                    1699 00109$:
+                           1700 ;./include/z80bootloader.h:196: if(INT_ISR_ADDR == aux_address_l && INT_ISR_ADDR>>8 == aux_address_h){
+   07F1 3Ar14r04      [13] 1701 	ld	a,(#_aux_address_l + 0)
+   07F4 D6 38         [ 7] 1702 	sub	a, #0x38
+   07F6 20 1F         [12] 1703 	jr	NZ,00115$
+   07F8 3Ar15r04      [13] 1704 	ld	a,(#_aux_address_h + 0)
+   07FB B7            [ 4] 1705 	or	a, a
+   07FC 20 19         [12] 1706 	jr	NZ,00115$
+                           1707 ;./include/z80bootloader.h:198: old_app_int_isr_addr_l= pkg_in.data[0];
+   07FE 3Ar22r04      [13] 1708 	ld	a,(#_pkg_in+4)
+   0801 32r18r04      [13] 1709 	ld	(#_old_app_int_isr_addr_l + 0),a
+                           1710 ;./include/z80bootloader.h:199: old_app_int_isr_addr_h= pkg_in.data[1];
+   0804 3Ar23r04      [13] 1711 	ld	a,(#_pkg_in+5)
+   0807 32r19r04      [13] 1712 	ld	(#_old_app_int_isr_addr_h + 0),a
+                           1713 ;./include/z80bootloader.h:200: aux_address_l=0x00;
+   080A 21r14r04      [10] 1714 	ld	hl,#_aux_address_l + 0
+   080D 36 00         [10] 1715 	ld	(hl), #0x00
+                           1716 ;./include/z80bootloader.h:201: aux_address_h=0x00;
+   080F 21r15r04      [10] 1717 	ld	hl,#_aux_address_h + 0
+   0812 36 00         [10] 1718 	ld	(hl), #0x00
+   0814 C3rA5r08      [10] 1719 	jp	00122$
+   0817                    1720 00115$:
+                           1721 ;./include/z80bootloader.h:204: if(NMI_ISR_ADDR == aux_address_l && NMI_ISR_ADDR>>8 == aux_address_h){
+   0817 3Ar14r04      [13] 1722 	ld	a,(#_aux_address_l + 0)
+   081A D6 66         [ 7] 1723 	sub	a, #0x66
+   081C 20 1E         [12] 1724 	jr	NZ,00111$
+   081E 3Ar15r04      [13] 1725 	ld	a,(#_aux_address_h + 0)
+   0821 B7            [ 4] 1726 	or	a, a
+   0822 20 18         [12] 1727 	jr	NZ,00111$
+                           1728 ;./include/z80bootloader.h:206: old_app_nmi_isr_addr_l= pkg_in.data[0];
+   0824 3Ar22r04      [13] 1729 	ld	a,(#_pkg_in+4)
+   0827 32r1Cr04      [13] 1730 	ld	(#_old_app_nmi_isr_addr_l + 0),a
+                           1731 ;./include/z80bootloader.h:207: old_app_nmi_isr_addr_h= pkg_in.data[1];
+   082A 3Ar23r04      [13] 1732 	ld	a,(#_pkg_in+5)
+   082D 32r1Dr04      [13] 1733 	ld	(#_old_app_nmi_isr_addr_h + 0),a
+                           1734 ;./include/z80bootloader.h:208: aux_address_l=0x00;
+   0830 21r14r04      [10] 1735 	ld	hl,#_aux_address_l + 0
+   0833 36 00         [10] 1736 	ld	(hl), #0x00
+                           1737 ;./include/z80bootloader.h:209: aux_address_h=0x00;
+   0835 21r15r04      [10] 1738 	ld	hl,#_aux_address_h + 0
+   0838 36 00         [10] 1739 	ld	(hl), #0x00
+   083A 18 69         [12] 1740 	jr	00122$
+   083C                    1741 00111$:
+                           1742 ;./include/z80bootloader.h:213: memcpy(&mem_buffer[mem_buffer_index], pkg_in.data, pkg_in.data_length);
+   083C DD 7E FE      [19] 1743 	ld	a,-2 (ix)
+   083F 21 01 00      [10] 1744 	ld	hl,#1
+   0842 39            [11] 1745 	add	hl,sp
+   0843 86            [ 7] 1746 	add	a, (hl)
+   0844 5F            [ 4] 1747 	ld	e,a
+   0845 DD 7E FF      [19] 1748 	ld	a,-1 (ix)
+   0848 23            [ 6] 1749 	inc	hl
+   0849 8E            [ 7] 1750 	adc	a, (hl)
+   084A 57            [ 4] 1751 	ld	d,a
+   084B 01r22r04      [10] 1752 	ld	bc,#_pkg_in+4
+   084E 21r1Fr04      [10] 1753 	ld	hl,#_pkg_in+1
+   0851 6E            [ 7] 1754 	ld	l,(hl)
+   0852 26 00         [ 7] 1755 	ld	h,#0x00
+   0854 E5            [11] 1756 	push	hl
+   0855 C5            [11] 1757 	push	bc
+   0856 D5            [11] 1758 	push	de
+   0857 CDr00r00      [17] 1759 	call	_memcpy
+   085A 21 06 00      [10] 1760 	ld	hl,#6
+   085D 39            [11] 1761 	add	hl,sp
+   085E F9            [ 6] 1762 	ld	sp,hl
+                           1763 ;./include/z80bootloader.h:214: mem_buffer_index += pkg_in.data_length;
+   085F 21r1Fr04      [10] 1764 	ld	hl,#_pkg_in+1
+   0862 5E            [ 7] 1765 	ld	e,(hl)
+   0863 16 00         [ 7] 1766 	ld	d,#0x00
+   0865 21 01 00      [10] 1767 	ld	hl,#1
+   0868 39            [11] 1768 	add	hl,sp
+   0869 7E            [ 7] 1769 	ld	a,(hl)
+   086A 83            [ 4] 1770 	add	a, e
+   086B 77            [ 7] 1771 	ld	(hl),a
+   086C 23            [ 6] 1772 	inc	hl
+   086D 7E            [ 7] 1773 	ld	a,(hl)
+   086E 8A            [ 4] 1774 	adc	a, d
+   086F 77            [ 7] 1775 	ld	(hl),a
+                           1776 ;./include/z80bootloader.h:228: break;
+   0870 18 33         [12] 1777 	jr	00122$
+                           1778 ;./include/z80bootloader.h:230: case PACKET_TYPE_EOF:  // Si es paquete de fin de archivo
+   0872                    1779 00118$:
+                           1780 ;./include/z80bootloader.h:231: is_exit=1;         // Termina el programa bootloader correctamente.
+   0872 DD 36 FD 01   [19] 1781 	ld	-3 (ix),#0x01
+                           1782 ;./include/z80bootloader.h:232: break;
+   0876 18 2D         [12] 1783 	jr	00122$
+                           1784 ;./include/z80bootloader.h:234: case PACKET_TYPE_FILE_HEADER:
+   0878                    1785 00119$:
+                           1786 ;./include/z80bootloader.h:237: app_program_size = *(uint16_t*)pkg_in.data;
+   0878 21r22r04      [10] 1787 	ld	hl,#_pkg_in+4
+   087B 56            [ 7] 1788 	ld	d,(hl)
+   087C 23            [ 6] 1789 	inc	hl
+   087D 66            [ 7] 1790 	ld	h,(hl)
+                           1791 ;./include/z80bootloader.h:239: if(app_program_size >= APP_SIZE){
+   087E 7A            [ 4] 1792 	ld	a,d
+   087F D6 FA         [ 7] 1793 	sub	a, #0xFA
+   0881 7C            [ 4] 1794 	ld	a,h
+   0882 DE 17         [ 7] 1795 	sbc	a, #0x17
+   0884 38 1F         [12] 1796 	jr	C,00122$
+                           1797 ;./include/z80bootloader.h:241: packet_fill(&pkg_out, PACKET_TYPE_ERROR,pkg_in.number, NULL, 0);
+   0886 21r20r04      [10] 1798 	ld	hl,#_pkg_in+2
+   0889 56            [ 7] 1799 	ld	d,(hl)
+   088A 01r22r05      [10] 1800 	ld	bc,#_pkg_out+0
+   088D AF            [ 4] 1801 	xor	a, a
+   088E F5            [11] 1802 	push	af
+   088F 33            [ 6] 1803 	inc	sp
+   0890 21 00 00      [10] 1804 	ld	hl,#0x0000
+   0893 E5            [11] 1805 	push	hl
+   0894 1E 45         [ 7] 1806 	ld	e, #0x45
+   0896 D5            [11] 1807 	push	de
+   0897 C5            [11] 1808 	push	bc
+   0898 CDr21r04      [17] 1809 	call	_packet_fill
+   089B 21 07 00      [10] 1810 	ld	hl,#7
+   089E 39            [11] 1811 	add	hl,sp
+   089F F9            [ 6] 1812 	ld	sp,hl
+                           1813 ;./include/z80bootloader.h:242: return 0;
+   08A0 21 00 00      [10] 1814 	ld	hl,#0x0000
+   08A3 18 7A         [12] 1815 	jr	00134$
+                           1816 ;./include/z80bootloader.h:246: }
+   08A5                    1817 00122$:
+                           1818 ;./include/z80bootloader.h:248: packet_send(&pkg_out);
+   08A5 21r22r05      [10] 1819 	ld	hl,#_pkg_out+0
+   08A8 E5            [11] 1820 	push	hl
+   08A9 CDrD1r05      [17] 1821 	call	_packet_send
+   08AC F1            [10] 1822 	pop	af
+   08AD C3r30r07      [10] 1823 	jp	00131$
+   08B0                    1824 00129$:
+                           1825 ;./include/z80bootloader.h:253: intent_count++;
+   08B0 FD 21 00 00   [14] 1826 	ld	iy,#0
+   08B4 FD 39         [15] 1827 	add	iy,sp
+   08B6 FD 34 00      [23] 1828 	inc	0 (iy)
+                           1829 ;./include/z80bootloader.h:255: if(intent_count >= MAX_READS_INTENTS)
+   08B9 FD 7E 00      [19] 1830 	ld	a,0 (iy)
+   08BC D6 0A         [ 7] 1831 	sub	a, #0x0A
+   08BE DAr30r07      [10] 1832 	jp	C,00131$
+                           1833 ;./include/z80bootloader.h:257: return 0;
+   08C1 21 00 00      [10] 1834 	ld	hl,#0x0000
+   08C4 18 59         [12] 1835 	jr	00134$
+   08C6                    1836 00133$:
+                           1837 ;./include/z80bootloader.h:264: eeprom_write_buffer(0x0080, mem_buffer, mem_buffer_index+1);
+   08C6 21 01 00      [10] 1838 	ld	hl, #1
+   08C9 39            [11] 1839 	add	hl, sp
+   08CA 5E            [ 7] 1840 	ld	e, (hl)
+   08CB 23            [ 6] 1841 	inc	hl
+   08CC 56            [ 7] 1842 	ld	d, (hl)
+   08CD 13            [ 6] 1843 	inc	de
+   08CE DD 6E FE      [19] 1844 	ld	l,-2 (ix)
+   08D1 DD 66 FF      [19] 1845 	ld	h,-1 (ix)
+   08D4 D5            [11] 1846 	push	de
+   08D5 E5            [11] 1847 	push	hl
+   08D6 21 80 00      [10] 1848 	ld	hl,#0x0080
+   08D9 E5            [11] 1849 	push	hl
+   08DA CDr40r03      [17] 1850 	call	_eeprom_write_buffer
+   08DD 21 06 00      [10] 1851 	ld	hl,#6
+   08E0 39            [11] 1852 	add	hl,sp
+   08E1 F9            [ 6] 1853 	ld	sp,hl
+                           1854 ;./include/z80bootloader.h:265: packet_fill(&pkg_out, PACKET_TYPE_EOF,pkg_in.number, NULL, 0);
+   08E2 21r20r04      [10] 1855 	ld	hl, #(_pkg_in + 0x0002) + 0
+   08E5 46            [ 7] 1856 	ld	b,(hl)
+   08E6 11r22r05      [10] 1857 	ld	de,#_pkg_out
+   08E9 AF            [ 4] 1858 	xor	a, a
+   08EA F5            [11] 1859 	push	af
+   08EB 33            [ 6] 1860 	inc	sp
+   08EC 21 00 00      [10] 1861 	ld	hl,#0x0000
+   08EF E5            [11] 1862 	push	hl
+   08F0 C5            [11] 1863 	push	bc
+   08F1 33            [ 6] 1864 	inc	sp
+   08F2 3E 5A         [ 7] 1865 	ld	a,#0x5A
+   08F4 F5            [11] 1866 	push	af
+   08F5 33            [ 6] 1867 	inc	sp
+   08F6 D5            [11] 1868 	push	de
+   08F7 CDr21r04      [17] 1869 	call	_packet_fill
+   08FA 21 07 00      [10] 1870 	ld	hl,#7
+   08FD 39            [11] 1871 	add	hl,sp
+   08FE F9            [ 6] 1872 	ld	sp,hl
+                           1873 ;./include/z80bootloader.h:266: delay_ms(500);
+   08FF 21 F4 01      [10] 1874 	ld	hl,#0x01F4
+   0902 E5            [11] 1875 	push	hl
+   0903 CDr21r00      [17] 1876 	call	_delay_ms
+                           1877 ;./include/z80bootloader.h:267: packet_send(&pkg_out);
+   0906 21r22r05      [10] 1878 	ld	hl, #_pkg_out
+   0909 E3            [19] 1879 	ex	(sp),hl
+   090A CDrD1r05      [17] 1880 	call	_packet_send
+                           1881 ;./include/z80bootloader.h:268: packet_send(&pkg_out);
+   090D 21r22r05      [10] 1882 	ld	hl, #_pkg_out
+   0910 E3            [19] 1883 	ex	(sp),hl
+   0911 CDrD1r05      [17] 1884 	call	_packet_send
+                           1885 ;./include/z80bootloader.h:269: packet_send(&pkg_out);
+   0914 21r22r05      [10] 1886 	ld	hl, #_pkg_out
+   0917 E3            [19] 1887 	ex	(sp),hl
+   0918 CDrD1r05      [17] 1888 	call	_packet_send
+   091B F1            [10] 1889 	pop	af
+                           1890 ;./include/z80bootloader.h:270: return 1;
+   091C 21 01 00      [10] 1891 	ld	hl,#0x0001
+   091F                    1892 00134$:
+   091F DD F9         [10] 1893 	ld	sp, ix
+   0921 DD E1         [14] 1894 	pop	ix
+   0923 C9            [10] 1895 	ret
+                           1896 ;./include/z80bootloader.h:275: void bootloader_start_app(){
+                           1897 ;	---------------------------------
+                           1898 ; Function bootloader_start_app
+                           1899 ; ---------------------------------
+   0924                    1900 _bootloader_start_app::
+                           1901 ;./include/z80bootloader.h:279: eeprom_write((uint16_t)ptr_int_isr_l,old_app_int_isr_addr_l);
+   0924 ED 5Br02r00   [20] 1902 	ld	de,(_ptr_int_isr_l)
+   0928 3Ar18r04      [13] 1903 	ld	a,(_old_app_int_isr_addr_l)
+   092B F5            [11] 1904 	push	af
+   092C 33            [ 6] 1905 	inc	sp
+   092D D5            [11] 1906 	push	de
+   092E CDrD5r02      [17] 1907 	call	_eeprom_write
+   0931 F1            [10] 1908 	pop	af
+   0932 33            [ 6] 1909 	inc	sp
+                           1910 ;./include/z80bootloader.h:280: eeprom_write((uint16_t)ptr_int_isr_h,old_app_int_isr_addr_h);
+   0933 ED 5Br04r00   [20] 1911 	ld	de,(_ptr_int_isr_h)
+   0937 3Ar19r04      [13] 1912 	ld	a,(_old_app_int_isr_addr_h)
+   093A F5            [11] 1913 	push	af
+   093B 33            [ 6] 1914 	inc	sp
+   093C D5            [11] 1915 	push	de
+   093D CDrD5r02      [17] 1916 	call	_eeprom_write
+   0940 F1            [10] 1917 	pop	af
+   0941 33            [ 6] 1918 	inc	sp
+                           1919 ;./include/z80bootloader.h:281: eeprom_write((uint16_t)ptr_nmi_isr_l,old_app_nmi_isr_addr_l);
+   0942 ED 5Br08r00   [20] 1920 	ld	de,(_ptr_nmi_isr_l)
+   0946 3Ar1Cr04      [13] 1921 	ld	a,(_old_app_nmi_isr_addr_l)
+   0949 F5            [11] 1922 	push	af
+   094A 33            [ 6] 1923 	inc	sp
+   094B D5            [11] 1924 	push	de
+   094C CDrD5r02      [17] 1925 	call	_eeprom_write
+   094F F1            [10] 1926 	pop	af
+   0950 33            [ 6] 1927 	inc	sp
+                           1928 ;./include/z80bootloader.h:282: eeprom_write((uint16_t)ptr_nmi_isr_h,old_app_nmi_isr_addr_h);
+   0951 ED 5Br0Ar00   [20] 1929 	ld	de,(_ptr_nmi_isr_h)
+   0955 3Ar1Dr04      [13] 1930 	ld	a,(_old_app_nmi_isr_addr_h)
+   0958 F5            [11] 1931 	push	af
+   0959 33            [ 6] 1932 	inc	sp
+   095A D5            [11] 1933 	push	de
+   095B CDrD5r02      [17] 1934 	call	_eeprom_write
+   095E F1            [10] 1935 	pop	af
+   095F 33            [ 6] 1936 	inc	sp
+                           1937 ;./include/z80bootloader.h:285: if(*((uint8_t*)(0x0080)) == 0x00 || *((uint8_t*)(0x0080)) == 0xFF)
+   0960 21 80 00      [10] 1938 	ld	hl,#0x0080
+   0963 7E            [ 7] 1939 	ld	a,(hl)
+   0964 B7            [ 4] 1940 	or	a, a
+   0965 28 03         [12] 1941 	jr	Z,00101$
+   0967 3C            [ 4] 1942 	inc	a
+   0968 20 0D         [12] 1943 	jr	NZ,00102$
+   096A                    1944 00101$:
+                           1945 ;./include/z80bootloader.h:287: eeprom_write(0x0080,0x76);
+   096A 3E 76         [ 7] 1946 	ld	a,#0x76
+   096C F5            [11] 1947 	push	af
+   096D 33            [ 6] 1948 	inc	sp
+   096E 21 80 00      [10] 1949 	ld	hl,#0x0080
+   0971 E5            [11] 1950 	push	hl
+   0972 CDrD5r02      [17] 1951 	call	_eeprom_write
+   0975 F1            [10] 1952 	pop	af
+   0976 33            [ 6] 1953 	inc	sp
+   0977                    1954 00102$:
+                           1955 ;./include/z80bootloader.h:292: __endasm;      
+   0977 CD 80 00      [17] 1956 	call #0x0080
+   097A C9            [10] 1957 	ret
+                           1958 ;./include/smz80.h:328: void io_write(char port_addr, char data){
+                           1959 ;	---------------------------------
+                           1960 ; Function io_write
+                           1961 ; ---------------------------------
+   097B                    1962 _io_write::
+                           1963 ;./include/smz80.h:339: __endasm;
+   097B DD 21 02 00   [14] 1964 	ld ix, #2
+   097F DD 39         [15] 1965 	add ix,sp
+   0981 DD 4E 00      [19] 1966 	ld c, (ix)
+   0984 DD 23         [10] 1967 	inc ix
+   0986 DD 7E 00      [19] 1968 	ld a,(ix)
+   0989 ED 79         [12] 1969 	out (c), a
+   098B C9            [10] 1970 	ret
+                           1971 ;./include/smz80.h:353: char io_read(char port_addr){
+                           1972 ;	---------------------------------
+                           1973 ; Function io_read
+                           1974 ; ---------------------------------
+   098C                    1975 _io_read::
+                           1976 ;./include/smz80.h:365: __endasm;
+   098C DD 21 02 00   [14] 1977 	LD IX, #2
+   0990 DD 39         [15] 1978 	ADD IX,SP
+   0992 DD 4E 00      [19] 1979 	LD C, (IX)
+   0995 ED 78         [12] 1980 	IN A,(C)
+   0997 32r26r06      [13] 1981 	LD (___ret_aux),A
+                           1982 ;./include/smz80.h:367: return __ret_aux;
+   099A FD 21r26r06   [14] 1983 	ld	iy,#___ret_aux
+   099E FD 6E 00      [19] 1984 	ld	l,0 (iy)
+   09A1 C9            [10] 1985 	ret
+                           1986 ;./include/smz80.h:379: void io_write_buffer(char port_addr, char* buffer_out, char count){
+                           1987 ;	---------------------------------
+                           1988 ; Function io_write_buffer
+                           1989 ; ---------------------------------
+   09A2                    1990 _io_write_buffer::
+                           1991 ;./include/smz80.h:395: __endasm;
+   09A2 DD 21 02 00   [14] 1992 	LD IX, #2
+   09A6 DD 39         [15] 1993 	ADD IX,SP
+   09A8 DD 4E 00      [19] 1994 	LD C, (IX)
+   09AB DD 23         [10] 1995 	INC IX
+   09AD DD 6E 00      [19] 1996 	LD L,(IX)
+   09B0 DD 23         [10] 1997 	INC IX
+   09B2 DD 66 00      [19] 1998 	LD H,(IX)
+   09B5 DD 23         [10] 1999 	INC IX
+   09B7 DD 46 00      [19] 2000 	LD B,(IX)
+   09BA ED B3         [21] 2001 	OTIR
+   09BC C9            [10] 2002 	ret
+                           2003 ;./include/smz80.h:406: void io_read_buffer(char port_addr, char* buffer_in, char count){
+                           2004 ;	---------------------------------
+                           2005 ; Function io_read_buffer
+                           2006 ; ---------------------------------
+   09BD                    2007 _io_read_buffer::
+                           2008 ;./include/smz80.h:423: __endasm;
+   09BD DD 21 02 00   [14] 2009 	LD IX, #2
+   09C1 DD 39         [15] 2010 	ADD IX,SP
+   09C3 DD 4E 00      [19] 2011 	LD C, (IX)
+   09C6 DD 23         [10] 2012 	INC IX
+   09C8 DD 6E 00      [19] 2013 	LD L,(IX)
+   09CB DD 23         [10] 2014 	INC IX
+   09CD DD 66 00      [19] 2015 	LD H,(IX)
+   09D0 DD 23         [10] 2016 	INC IX
+   09D2 DD 46 00      [19] 2017 	LD B,(IX)
+   09D5 ED B2         [21] 2018 	INIR
+   09D7 C9            [10] 2019 	ret
+                           2020 ;./include/smz80.h:436: void ppi_init(const ppi_cfg_t *ppi_config){
+                           2021 ;	---------------------------------
+                           2022 ; Function ppi_init
+                           2023 ; ---------------------------------
+   09D8                    2024 _ppi_init::
+   09D8 DD E5         [15] 2025 	push	ix
+   09DA DD 21 00 00   [14] 2026 	ld	ix,#0
+   09DE DD 39         [15] 2027 	add	ix,sp
+                           2028 ;./include/smz80.h:438: PPI_CTRL = 0x80 | ppi_config->mode | (ppi_config->pcl_dir << PCPCL) | (ppi_config->pch_dir << PCPCH) | (ppi_config->pa_dir << PCPA) | (ppi_config->pb_dir << PCPB);
+   09E0 DD 4E 04      [19] 2029 	ld	c,4 (ix)
+   09E3 DD 46 05      [19] 2030 	ld	b,5 (ix)
+   09E6 0A            [ 7] 2031 	ld	a,(bc)
+   09E7 CB FF         [ 8] 2032 	set	7, a
+   09E9 5F            [ 4] 2033 	ld	e,a
+   09EA C5            [11] 2034 	push	bc
+   09EB FD E1         [14] 2035 	pop	iy
+   09ED FD 7E 03      [19] 2036 	ld	a,3 (iy)
+   09F0 B3            [ 4] 2037 	or	a, e
+   09F1 5F            [ 4] 2038 	ld	e,a
+   09F2 C5            [11] 2039 	push	bc
+   09F3 FD E1         [14] 2040 	pop	iy
+   09F5 FD 7E 04      [19] 2041 	ld	a,4 (iy)
+   09F8 07            [ 4] 2042 	rlca
+   09F9 07            [ 4] 2043 	rlca
+   09FA 07            [ 4] 2044 	rlca
+   09FB E6 F8         [ 7] 2045 	and	a,#0xF8
+   09FD B3            [ 4] 2046 	or	a, e
+   09FE 5F            [ 4] 2047 	ld	e,a
+   09FF 69            [ 4] 2048 	ld	l, c
+   0A00 60            [ 4] 2049 	ld	h, b
+   0A01 23            [ 6] 2050 	inc	hl
+   0A02 7E            [ 7] 2051 	ld	a,(hl)
+   0A03 07            [ 4] 2052 	rlca
+   0A04 07            [ 4] 2053 	rlca
+   0A05 07            [ 4] 2054 	rlca
+   0A06 07            [ 4] 2055 	rlca
+   0A07 E6 F0         [ 7] 2056 	and	a,#0xF0
+   0A09 B3            [ 4] 2057 	or	a, e
+   0A0A 57            [ 4] 2058 	ld	d,a
+   0A0B 69            [ 4] 2059 	ld	l, c
+   0A0C 60            [ 4] 2060 	ld	h, b
+   0A0D 23            [ 6] 2061 	inc	hl
+   0A0E 23            [ 6] 2062 	inc	hl
+   0A0F 7E            [ 7] 2063 	ld	a,(hl)
+   0A10 87            [ 4] 2064 	add	a, a
+   0A11 B2            [ 4] 2065 	or	a, d
+   0A12 D3 03         [11] 2066 	out	(_PPI_CTRL),a
+   0A14 DD E1         [14] 2067 	pop	ix
+   0A16 C9            [10] 2068 	ret
+                           2069 ;./include/smz80.h:447: void ppi_set_portc_bit(const char bit){
+                           2070 ;	---------------------------------
+                           2071 ; Function ppi_set_portc_bit
+                           2072 ; ---------------------------------
+   0A17                    2073 _ppi_set_portc_bit::
+                           2074 ;./include/smz80.h:449: PPI_CTRL = 1 | bit << 1;
+   0A17 21 02 00      [10] 2075 	ld	hl, #2+0
+   0A1A 39            [11] 2076 	add	hl, sp
+   0A1B 7E            [ 7] 2077 	ld	a, (hl)
+   0A1C 87            [ 4] 2078 	add	a, a
+   0A1D CB C7         [ 8] 2079 	set	0, a
+   0A1F D3 03         [11] 2080 	out	(_PPI_CTRL),a
+   0A21 C9            [10] 2081 	ret
+                           2082 ;./include/smz80.h:458: void ppi_clear_portc_bit(const char bit){
+                           2083 ;	---------------------------------
+                           2084 ; Function ppi_clear_portc_bit
+                           2085 ; ---------------------------------
+   0A22                    2086 _ppi_clear_portc_bit::
+                           2087 ;./include/smz80.h:460: PPI_CTRL = bit << 1;
+   0A22 21 02 00      [10] 2088 	ld	hl, #2+0
+   0A25 39            [11] 2089 	add	hl, sp
+   0A26 7E            [ 7] 2090 	ld	a, (hl)
+   0A27 87            [ 4] 2091 	add	a, a
+   0A28 D3 03         [11] 2092 	out	(_PPI_CTRL),a
+   0A2A C9            [10] 2093 	ret
+                           2094 ;main.c:44: ISR_NMI(){
+                           2095 ;	---------------------------------
+                           2096 ; Function isr_vector66
+                           2097 ; ---------------------------------
+   0A2B                    2098 _isr_vector66::
+   0A2B F5            [11] 2099 	push	af
+   0A2C C5            [11] 2100 	push	bc
+   0A2D D5            [11] 2101 	push	de
+   0A2E E5            [11] 2102 	push	hl
+   0A2F FD E5         [15] 2103 	push	iy
+                           2104 ;main.c:48: }
+   0A31 FD E1         [14] 2105 	pop	iy
+   0A33 E1            [10] 2106 	pop	hl
+   0A34 D1            [10] 2107 	pop	de
+   0A35 C1            [10] 2108 	pop	bc
+   0A36 F1            [10] 2109 	pop	af
+   0A37 ED 45         [14] 2110 	retn
+                           2111 ;main.c:50: ISR_INT_38(){
+                           2112 ;	---------------------------------
+                           2113 ; Function isr_vector38
+                           2114 ; ---------------------------------
+   0A39                    2115 _isr_vector38::
+   0A39 F5            [11] 2116 	push	af
+   0A3A C5            [11] 2117 	push	bc
+   0A3B D5            [11] 2118 	push	de
+   0A3C E5            [11] 2119 	push	hl
+   0A3D FD E5         [15] 2120 	push	iy
+                           2121 ;main.c:52: }
+   0A3F FD E1         [14] 2122 	pop	iy
+   0A41 E1            [10] 2123 	pop	hl
+   0A42 D1            [10] 2124 	pop	de
+   0A43 C1            [10] 2125 	pop	bc
+   0A44 F1            [10] 2126 	pop	af
+   0A45 ED 4D         [14] 2127 	reti
+                           2128 ;main.c:54: void init_system(){
+                           2129 ;	---------------------------------
+                           2130 ; Function init_system
+                           2131 ; ---------------------------------
+   0A47                    2132 _init_system::
+                           2133 ;main.c:55: PPI_CTRL=0x80;
+   0A47 3E 80         [ 7] 2134 	ld	a,#0x80
+   0A49 D3 03         [11] 2135 	out	(_PPI_CTRL),a
+                           2136 ;main.c:57: write_byte_EEPROM_ptr = (void*)write_byte_EEPROM_RAM;  // apuntador de fincion guardada en ram para escribir un byte en eeprom 
+   0A4B 21 00 A0      [10] 2137 	ld	hl,#0xA000
+   0A4E 22r0Fr04      [16] 2138 	ld	(_write_byte_EEPROM_ptr),hl
+                           2139 ;main.c:58: delay_1ms_ptr = (void*)delay_1ms_RAM; // apuntador de funcion guardada en ram para esperar un mili-segundo.
+   0A51 26 B0         [ 7] 2140 	ld	h, #0xB0
+   0A53 22r06r00      [16] 2141 	ld	(_delay_1ms_ptr),hl
+                           2142 ;main.c:59: copeaBloque((uint16_t)&write_byte,write_byte_EEPROM_RAM,0x50); // copea funcion write_byte de eprom a ram.
+   0A56 11rE1r03      [10] 2143 	ld	de,#_write_byte
+   0A59 3E 50         [ 7] 2144 	ld	a,#0x50
+   0A5B F5            [11] 2145 	push	af
+   0A5C 33            [ 6] 2146 	inc	sp
+   0A5D 26 A0         [ 7] 2147 	ld	h, #0xA0
+   0A5F E5            [11] 2148 	push	hl
+   0A60 D5            [11] 2149 	push	de
+   0A61 CDr5Er00      [17] 2150 	call	_copeaBloque
+   0A64 F1            [10] 2151 	pop	af
+   0A65 F1            [10] 2152 	pop	af
+   0A66 33            [ 6] 2153 	inc	sp
+                           2154 ;main.c:60: copeaBloque((uint16_t)&delay_1ms,delay_1ms_RAM,0x30);// copea funcion de delay_1ms de eeprom a ram.
+   0A67 11r00r00      [10] 2155 	ld	de,#_delay_1ms
+   0A6A 3E 30         [ 7] 2156 	ld	a,#0x30
+   0A6C F5            [11] 2157 	push	af
+   0A6D 33            [ 6] 2158 	inc	sp
+   0A6E 21 00 B0      [10] 2159 	ld	hl,#0xB000
+   0A71 E5            [11] 2160 	push	hl
+   0A72 D5            [11] 2161 	push	de
+   0A73 CDr5Er00      [17] 2162 	call	_copeaBloque
+   0A76 F1            [10] 2163 	pop	af
+   0A77 F1            [10] 2164 	pop	af
+   0A78 33            [ 6] 2165 	inc	sp
+                           2166 ;main.c:61: bootloader_init();
+   0A79 C3r34r06      [10] 2167 	jp	_bootloader_init
+                           2168 ;main.c:64: int main(){
+                           2169 ;	---------------------------------
+                           2170 ; Function main
+                           2171 ; ---------------------------------
+   0A7C                    2172 _main::
+   0A7C 21 FC FE      [10] 2173 	ld	hl,#-260
+   0A7F 39            [11] 2174 	add	hl,sp
+   0A80 F9            [ 6] 2175 	ld	sp,hl
+                           2176 ;main.c:79: init_system();
+   0A81 CDr47r0A      [17] 2177 	call	_init_system
+                           2178 ;main.c:95: uart_write('1');
+   0A84 3E 31         [ 7] 2179 	ld	a,#0x31
+   0A86 F5            [11] 2180 	push	af
+   0A87 33            [ 6] 2181 	inc	sp
+   0A88 CDrECr00      [17] 2182 	call	_uart_write
+   0A8B 33            [ 6] 2183 	inc	sp
+                           2184 ;main.c:101: if(bootloader_check_program_commnad())
+   0A8C CDrC9r06      [17] 2185 	call	_bootloader_check_program_commnad
+   0A8F 7D            [ 4] 2186 	ld	a, l
+   0A90 B7            [ 4] 2187 	or	a, a
+   0A91 28 47         [12] 2188 	jr	Z,00104$
+                           2189 ;main.c:103: uart_print("OK");
+   0A93 21rE9r0A      [10] 2190 	ld	hl,#___str_0
+   0A96 E5            [11] 2191 	push	hl
+   0A97 CDr0Dr02      [17] 2192 	call	_uart_print
+   0A9A F1            [10] 2193 	pop	af
+                           2194 ;main.c:113: if(!bootloader_run())
+   0A9B CDrFBr06      [17] 2195 	call	_bootloader_run
+   0A9E 7C            [ 4] 2196 	ld	a,h
+   0A9F B5            [ 4] 2197 	or	a,l
+   0AA0 20 18         [12] 2198 	jr	NZ,00102$
+                           2199 ;main.c:116: eeprom_write(0x0080,0x76);//escribe halt en direccion 80
+   0AA2 3E 76         [ 7] 2200 	ld	a,#0x76
+   0AA4 F5            [11] 2201 	push	af
+   0AA5 33            [ 6] 2202 	inc	sp
+   0AA6 21 80 00      [10] 2203 	ld	hl,#0x0080
+   0AA9 E5            [11] 2204 	push	hl
+   0AAA CDrD5r02      [17] 2205 	call	_eeprom_write
+                           2206 ;main.c:117: delay_ms(100);
+   0AAD 33            [ 6] 2207 	inc	sp
+   0AAE 21 64 00      [10] 2208 	ld	hl,#0x0064
+   0AB1 E3            [19] 2209 	ex	(sp),hl
+   0AB2 CDr21r00      [17] 2210 	call	_delay_ms
+   0AB5 F1            [10] 2211 	pop	af
+                           2212 ;main.c:121: __endasm;
+   0AB6 CD 80 00      [17] 2213 	call #0x0080
+                           2214 ;main.c:122: nop();
+   0AB9 00            [ 4] 2215 	NOP
+   0ABA                    2216 00102$:
+                           2217 ;main.c:124: packet_fill(&pkg_out, PACKET_TYPE_EOF,200, NULL, 0);
+   0ABA 21 00 00      [10] 2218 	ld	hl,#0x0000
+   0ABD 39            [11] 2219 	add	hl,sp
+   0ABE EB            [ 4] 2220 	ex	de,hl
+   0ABF 4B            [ 4] 2221 	ld	c, e
+   0AC0 42            [ 4] 2222 	ld	b, d
+   0AC1 D5            [11] 2223 	push	de
+   0AC2 AF            [ 4] 2224 	xor	a, a
+   0AC3 F5            [11] 2225 	push	af
+   0AC4 33            [ 6] 2226 	inc	sp
+   0AC5 21 00 00      [10] 2227 	ld	hl,#0x0000
+   0AC8 E5            [11] 2228 	push	hl
+   0AC9 21 5A C8      [10] 2229 	ld	hl,#0xC85A
+   0ACC E5            [11] 2230 	push	hl
+   0ACD C5            [11] 2231 	push	bc
+   0ACE CDr21r04      [17] 2232 	call	_packet_fill
+   0AD1 21 07 00      [10] 2233 	ld	hl,#7
+   0AD4 39            [11] 2234 	add	hl,sp
+   0AD5 F9            [ 6] 2235 	ld	sp,hl
+   0AD6 CDrD1r05      [17] 2236 	call	_packet_send
+   0AD9 F1            [10] 2237 	pop	af
+   0ADA                    2238 00104$:
+                           2239 ;main.c:129: bootloader_start_app();
+   0ADA CDr24r09      [17] 2240 	call	_bootloader_start_app
+                           2241 ;main.c:132: return 0;
+   0ADD 21 00 00      [10] 2242 	ld	hl,#0x0000
+   0AE0 FD 21 04 01   [14] 2243 	ld	iy,#260
+   0AE4 FD 39         [15] 2244 	add	iy,sp
+   0AE6 FD F9         [10] 2245 	ld	sp,iy
+   0AE8 C9            [10] 2246 	ret
+   0AE9                    2247 ___str_0:
+   0AE9 4F 4B              2248 	.ascii "OK"
+   0AEB 00                 2249 	.db 0x00
+                           2250 ;main.c:135: void test_program_command() {
+                           2251 ;	---------------------------------
+                           2252 ; Function test_program_command
+                           2253 ; ---------------------------------
+   0AEC                    2254 _test_program_command::
+                           2255 ;main.c:137: uart_print("Esperando comando de programacion: @");
+   0AEC 21r0Fr0B      [10] 2256 	ld	hl,#___str_1
+   0AEF E5            [11] 2257 	push	hl
+   0AF0 CDr0Dr02      [17] 2258 	call	_uart_print
+   0AF3 F1            [10] 2259 	pop	af
+                           2260 ;main.c:138: if(bootloader_check_program_commnad())
+   0AF4 CDrC9r06      [17] 2261 	call	_bootloader_check_program_commnad
+   0AF7 7D            [ 4] 2262 	ld	a,l
+   0AF8 B7            [ 4] 2263 	or	a, a
+   0AF9 28 0A         [12] 2264 	jr	Z,00102$
+                           2265 ;main.c:139: uart_print("Comando OK! :D");
+   0AFB 21r34r0B      [10] 2266 	ld	hl,#___str_2
+   0AFE E5            [11] 2267 	push	hl
+   0AFF CDr0Dr02      [17] 2268 	call	_uart_print
+   0B02 F1            [10] 2269 	pop	af
+   0B03 18 08         [12] 2270 	jr	00103$
+   0B05                    2271 00102$:
+                           2272 ;main.c:141: uart_print("No se recibio @");
+   0B05 21r43r0B      [10] 2273 	ld	hl,#___str_3+0
+   0B08 E5            [11] 2274 	push	hl
+   0B09 CDr0Dr02      [17] 2275 	call	_uart_print
+   0B0C F1            [10] 2276 	pop	af
+   0B0D                    2277 00103$:
+                           2278 ;main.c:143: HALT();
+   0B0D 76            [ 4] 2279 	HALT
+   0B0E C9            [10] 2280 	ret
+   0B0F                    2281 ___str_1:
+   0B0F 45 73 70 65 72 61  2282 	.ascii "Esperando comando de programacion: @"
+        6E 64 6F 20 63 6F
+        6D 61 6E 64 6F 20
+        64 65 20 70 72 6F
+        67 72 61 6D 61 63
+        69 6F 6E 3A 20 40
+   0B33 00                 2283 	.db 0x00
+   0B34                    2284 ___str_2:
+   0B34 43 6F 6D 61 6E 64  2285 	.ascii "Comando OK! :D"
+        6F 20 4F 4B 21 20
+        3A 44
+   0B42 00                 2286 	.db 0x00
+   0B43                    2287 ___str_3:
+   0B43 4E 6F 20 73 65 20  2288 	.ascii "No se recibio @"
+        72 65 63 69 62 69
+        6F 20 40
+   0B52 00                 2289 	.db 0x00
+                           2290 	.area _CODE
+                           2291 	.area _INITIALIZER
+   0000                    2292 __xinit__ptr_int_isr:
+   0000 38 00              2293 	.dw #0x0038
+   0002                    2294 __xinit__ptr_int_isr_l:
+   0002 39 00              2295 	.dw #0x0039
+   0004                    2296 __xinit__ptr_int_isr_h:
+   0004 3A 00              2297 	.dw #0x003A
+   0006                    2298 __xinit__ptr_nmi_isr:
+   0006 38 00              2299 	.dw #0x0038
+   0008                    2300 __xinit__ptr_nmi_isr_l:
+   0008 67 00              2301 	.dw #0x0067
+   000A                    2302 __xinit__ptr_nmi_isr_h:
+   000A 68 00              2303 	.dw #0x0068
+   000C                    2304 __xinit__app_main_addr:
+   000C 80 00              2305 	.dw #0x0080
+                           2306 	.area _CABS (ABS)

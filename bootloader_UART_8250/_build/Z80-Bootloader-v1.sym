@@ -1,0 +1,145 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =  2710 L
+    .__.ABS.                                                    =  0000 G
+    .__.CPU.                                                    =  0000 L
+    .__.H$L.                                                    =  0000 L
+  0 LOOP_10                                                        004F R
+  0 LOOP_100                                                       0058 R
+    _PPI_CTRL                                                   =  0003 
+    _PPI_PORTA                                                  =  0000 
+    _PPI_PORTB                                                  =  0001 
+    _PPI_PORTC                                                  =  0002 
+    _URDLL                                                      =  0070 
+    _URDLM                                                      =  0071 
+    _URFCR                                                      =  0072 
+    _URIER                                                      =  0071 
+    _URIIR                                                      =  0072 
+    _URLCR                                                      =  0073 
+    _URLSR                                                      =  0075 
+    _URMCR                                                      =  0074 
+    _URMSR                                                      =  0076 
+    _URRBR                                                      =  0070 
+    _URTHR                                                      =  0070 
+  1 ___ret_aux                                                     0626 GR
+    ___sdcc_call_hl                                                **** GX
+  0 ___str_0                                                       0B22 R
+  0 ___str_1                                                       0B48 R
+  0 ___str_2                                                       0B6D R
+  0 ___str_3                                                       0B7C R
+  1 __in_buffer_index                                              0408 R
+  1 __is_interrupt_enable                                          040C R
+  1 __out_buffer_index                                             040A R
+  1 __uart_in_buffer                                               0008 R
+  7 __xinit__app_main_addr                                         000C R
+  7 __xinit__ptr_int_isr                                           0000 R
+  7 __xinit__ptr_int_isr_h                                         0004 R
+  7 __xinit__ptr_int_isr_l                                         0002 R
+  7 __xinit__ptr_nmi_isr                                           0006 R
+  7 __xinit__ptr_nmi_isr_h                                         000A R
+  7 __xinit__ptr_nmi_isr_l                                         0008 R
+  1 _address_hight                                                 0412 GR
+  1 _address_low                                                   0413 GR
+  2 _app_main_addr                                                 000C R
+  1 _aux_address_h                                                 0415 R
+  1 _aux_address_l                                                 0414 R
+  0 _bootloader_check_program_commnad                              0702 GR
+  0 _bootloader_init                                               0678 GR
+  0 _bootloader_run                                                0734 GR
+  0 _bootloader_start_app                                          095D GR
+  1 _cont                                                          0627 GR
+  0 _copeaBloque                                                   005E GR
+  1 _data                                                          0411 GR
+  0 _delay_100us                                                   0054 GR
+  0 _delay_10us                                                    004B GR
+  0 _delay_1ms                                                     0000 GR
+  1 _delay_1ms_ptr                                                 0006 GR
+  0 _delay_ms                                                      0021 GR
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  1 _dir_destination                                               0002 GR
+  1 _dir_origin                                                    0000 GR
+  0 _eeprom_erase                                                  0355 GR
+  1 _eeprom_ptr                                                    040D R
+  0 _eeprom_read                                                   03D2 GR
+  0 _eeprom_read_buffer                                            03F1 GR
+  0 _eeprom_write                                                  031C GR
+  0 _eeprom_write_buffer                                           0387 GR
+  1 _flag                                                          0629 GR
+  0 _init_system                                                   0A80 GR
+  0 _io_read                                                       09C5 GR
+  0 _io_read_buffer                                                09F6 GR
+  0 _io_write                                                      09B4 GR
+  0 _io_write_buffer                                               09DB GR
+    _isprint                                                       **** GX
+  0 _isr_vector38                                                  0A72 GR
+  0 _isr_vector66                                                  0A64 GR
+  0 _main                                                          0AB5 GR
+    _memcpy                                                        **** GX
+  1 _old_app_int_isr_addr                                          0416 R
+  1 _old_app_int_isr_addr_h                                        0419 R
+  1 _old_app_int_isr_addr_l                                        0418 R
+  1 _old_app_nmi_isr_addr                                          041A R
+  1 _old_app_nmi_isr_addr_h                                        041D R
+  1 _old_app_nmi_isr_addr_l                                        041C R
+  0 _packet_check                                                  04FF GR
+  0 _packet_fill                                                   0468 GR
+  0 _packet_read                                                   0577 GR
+  0 _packet_send                                                   0615 GR
+  1 _pkg_in                                                        041E R
+  1 _pkg_out                                                       0522 R
+  0 _ppi_clear_portc_bit                                           0A5B GR
+  0 _ppi_init                                                      0A11 GR
+  0 _ppi_set_portc_bit                                             0A50 GR
+  0 _printBuffer                                                   0303 GR
+  2 _ptr_int_isr                                                   0000 R
+  2 _ptr_int_isr_h                                                 0004 R
+  2 _ptr_int_isr_l                                                 0002 R
+  2 _ptr_nmi_isr                                                   0006 R
+  2 _ptr_nmi_isr_h                                                 000A R
+  2 _ptr_nmi_isr_l                                                 0008 R
+  1 _size                                                          0004 GR
+  0 _test_program_command                                          0B25 GR
+  0 _uart_available                                                01D3 GR
+  0 _uart_disable_interrupts                                       02EE GR
+  0 _uart_enable_interrupts                                        02F8 GR
+  0 _uart_flush                                                    01F4 GR
+  0 _uart_init                                                     00C4 GR
+  0 _uart_interrupt_isr                                            0200 GR
+  0 _uart_print                                                    023F GR
+  0 _uart_read                                                     0156 GR
+  0 _uart_read_buffer                                              018E GR
+  0 _uart_read_line                                                0251 GR
+  0 _uart_set_baudrate                                             0106 GR
+  0 _uart_write                                                    011E GR
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  0 _uart_write_buffer                                             012F GR
+  0 _write_byte                                                    0428 GR
+  1 _write_byte_EEPROM_ptr                                         040F GR
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE                                      size  B8C   flags    0
+   1 _DATA                                      size  62B   flags    0
+   2 _INITIALIZED                               size    E   flags    0
+   3 _DABS                                      size    0   flags    8
+   4 _HOME                                      size    0   flags    0
+   5 _GSINIT                                    size    0   flags    0
+   6 _GSFINAL                                   size    0   flags    0
+   7 _INITIALIZER                               size    E   flags    0
+   8 _CABS                                      size    0   flags    8
+

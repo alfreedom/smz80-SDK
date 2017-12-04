@@ -1,0 +1,100 @@
+2016-10-02 Philipp Klaus Krause <pkk AT spth.de>
+
+	* src/SDCClabel.c,
+	  src/SDCCset.h,
+	  src/SDCCset.c:
+	  Implement jump-to-jump optimization for jump tables RFE #514.
+	* src/SDCCcse.c:
+	  Optimize bitwise and of _Bool and comparison results, RFE #513.
+
+2016-09-25 Maarten Brock <sourceforge.brock AT dse.nl>
+
+	* src/mcs51/gen.c (shiftLLong): support sizes 1,2,4,8,
+	  refactored genlshOne, genlshTwo, genlshFour into genlshFixed,
+	  (genLeftShiftLiteral): support long long
+
+2016-09-24 Philipp Klaus Krause <pkk AT spth.de>
+
+	* src/SDCCast.c,
+	  support/regression/tests/bug-2548.c,
+	  support/regression/tests/bug-2551.c:
+	  Fix bugs #2548, #2551 by disabling a broken AST optimization.
+
+2016-09-19 Ben Shi <powerstudio1st AT 163 DOT com>
+
+	* src/stm8/gen.c
+	  Fix a bug in bitwise-and operation (genAnd()).
+
+2016-09-17 Maarten Brock <sourceforge.brock AT dse.nl>
+
+	* config.vcxproj,
+	* src/sdcc.vcxproj,
+	* src/sdcc.vcxproj.filters: moved SDCC.lex and SDCC.y to config project
+	* src/mcs51/gen.c (gencjneshort): proper support for long long
+	* src/mcs51/peeph.def: restart 3.b
+	* src/SDCCsymt.c (initCSupport): MSVC doesn't support casting compound lit
+	* src/SDCCval.c (csdOfVal): we still use MSVC 2010, no mid-code declarations
+	* support/regression/tests/bug-2205.c: removed unused disabled warning
+	* support/regression/tests/gcc-torture-execute-20020506-1.c: intermediate
+	  functions should not be named test*
+	* support/regression/tests/gcc-torture-execute-961122-1.c: fixed no-return
+	  warning
+
+2016-09-17 Ben Shi <powerstudio1st AT 163 DOT com>
+
+	* device/lib/isinf.c
+	* device/lib/isnan.c
+	  Improve comapabililty and efficiency.
+ 
+2016-09-15 Ben Shi <powerstudio1st AT 163 DOT com>
+
+	* device/lib/isinf.c
+	* device/lib/isnan.c
+	  Improve compatibility.
+
+2016-09-14 Maarten Brock <sourceforge.brock AT dse.nl>
+
+	* src/mcs51/gen.c (isLiteralBit): fixed for long long,
+	  (genReceive):	fixed stack smashing bug
+	* support/regression/tests/test-p99-conformance.c: decreased restrict_buffer
+
+2016-09-12 Philipp Klaus Krause <pkk AT spth.de>
+
+	* device/include/stdbool.h,
+	  src/mcs51/gen.c:
+	  Standard-compliant _Bool for mcs51.
+
+2016-09-08 Philipp Klaus Krause <pkk AT spth.de>
+
+	* device/include/stdint.h:
+	  Enable C99 typedefs for 64-bit types.
+
+2016-09-07 Ben Shi <powerstudio1st AT 163 DOT com>
+
+	* src/mcs51/gen.c
+	  Improve longlong compatibility of mcs-51 on 32-bit hosts.
+
+2016-09-03 Philipp Klaus Krause <pkk AT spth.de>
+
+	* src/mcs51/gen.c:
+	  Fixes for mcs51 long long on 32-bit hosts.
+
+2016-08-30 Philipp Klaus Krause <pkk AT spth.de>
+
+	* src/mcs51/gen.c:
+	  Fixes for mcs51 long long on 32-bit hosts.
+
+2016-08-28 Philipp Klaus Krause <pkk AT spth.de>
+
+	* support/regression/tests/gcc-torture-execute-20020506-1.c:
+	  Disable test for ds390 that accidentially got enabled when enabled for mcs51.
+
+2016-08-26 Philipp Klaus Krause <pkk AT spth.de>
+
+	* src/mcs51/peep.c,
+	  support/regression/tests/bug-2477.c,
+	  support/regression/tests/gcc-torture-execute-20001031-1.c,
+	  support/regression/tests/gcc-torture-execute-20020506-1.c,
+	  support/regression/tests/gcc-torture-execute-20060127-1.c,
+	  support/regression/tests/gcc-torture-execute-941015-1.c,
+	  support/regression/tests/gcc-torture-execute-950512-1.c,

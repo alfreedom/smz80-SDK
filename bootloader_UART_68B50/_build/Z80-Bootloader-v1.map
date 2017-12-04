@@ -1,0 +1,231 @@
+ASxxxx Linker V03.00 + NoICE + sdld,  page 1.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000000  .__.ABS.                           _memcpy
+     00000000  l__BSEG                         
+     00000000  l__BSS                          
+     00000000  l__CABS                         
+     00000000  l__DABS                         
+     00000000  l__HEADER                       
+     00000000  l__HEADER1                      
+     00000000  l__HEADER2                      
+     00000000  l__HEADER3                      
+     00000000  l__HEADER4                      
+     00000000  l__HEADER5                      
+     00000000  l__HEADER6                      
+     00000000  l__HEAP                         
+     00000000  l__HOME                         
+     00000000  s__CABS                         
+     00000000  s__DABS                         
+     00000000  s__HEADER                       
+     00000000  s__HEADER0                      
+     00000000  s__HEADER1                      
+     00000000  s__HEADER2                      
+     00000000  s__HEADER3                      
+     00000000  s__HEADER4                      
+     00000000  s__HEADER5                      
+     00000000  s__HEADER6                      
+     00000000  s__HEADER7                      
+     00000000  s__HEADER8                      
+     00000000  s__HEADER9                      
+     00000001  l__GSFINAL                      
+     00000003  l__HEADER0                      
+     00000003  l__HEADER7                      
+     00000003  l__HEADER8                      
+     0000000A  l__HEADER9                      
+     0000000E  l__INITIALIZED                  
+     0000000E  l__INITIALIZER                  
+     0000000F  l__GSINIT                       
+     0000062B  l__DATA                         
+     00000BD7  l__CODE                         
+     00006810  s__CODE                         
+     000073E7  s__HOME                         
+     000073E7  s__INITIALIZER                  
+     000073F5  s__GSINIT                       
+     00007404  s__GSFINAL                      
+     00008000  s__DATA                         
+     0000862B  s__INITIALIZED                  
+     00008639  s__BSEG                         
+     00008639  s__BSS                          
+     00008639  s__HEAP                         
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00006810    00000BD7 =        3031. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00006810  _delay_1ms                         main
+     00006831  _delay_ms                          main
+     0000685B  _delay_10us                        main
+     00006864  _delay_100us                       main
+     0000686E  _copeaBloque                       main
+     000068D4  _uart_init                         main
+     000068FC  _uart_write                        main
+     0000690D  _uart_write_buffer                 main
+     00006934  _uart_read                         main
+     0000696C  _uart_read_buffer                  main
+     000069B1  _uart_available                    main
+     000069D2  _uart_flush                        main
+     000069DE  _uart_interrupt_isr                main
+     00006A1D  _uart_print                        main
+     00006A2F  _uart_read_line                    main
+     00006ACC  _printBuffer                       main
+     00006AE5  _eeprom_write                      main
+     00006B1E  _eeprom_erase                      main
+     00006B50  _eeprom_write_buffer               main
+     00006B9B  _eeprom_read                       main
+     00006BBA  _eeprom_read_buffer                main
+     00006BF1  _write_byte                        main
+     00006C31  _packet_fill                       main
+     00006CC7  _packet_check                      main
+     00006D3F  _packet_read                       main
+     00006DE1  _packet_send                       main
+     00006E44  _bootloader_init                   main
+     00006ED9  _bootloader_check_program_commna   main
+     00006F0B  _bootloader_run                    main
+     00007134  _bootloader_start_app              main
+     0000718B  _io_write                          main
+     0000719C  _io_read                           main
+     000071B2  _io_write_buffer                   main
+     000071CD  _io_read_buffer                    main
+     000071E8  _ppi_init                          main
+     00007227  _ppi_set_portc_bit                 main
+     00007232  _ppi_clear_portc_bit               main
+     0000723B  _isr_vector66                      main
+     00007249  _isr_vector38                      main
+     00007257  _init_system                       main
+     0000728C  _main                              main
+     000072FC  _test_program_command              main
+     00007363  _isprint                           isprint
+     00007397  ___sdcc_call_hl                    
+     00007398  _memcpy                            _memcpy
+ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_HEADER0                            00000000    00000003 =           3. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_HEADER7                            00000000    00000003 =           3. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_HEADER8                            00000000    00000003 =           3. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 6.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_HEADER9                            00000000    0000000A =          10. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 7.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_INITIALIZER                        000073E7    0000000E =          14. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 8.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_GSINIT                             000073F5    0000000F =          15. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     000073F5  gsinit                             init
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 9.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_GSFINAL                            00007404    00000001 =           1. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 10.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_DATA                               00008000    0000062B =        1579. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00008000  _dir_origin                        main
+     00008002  _dir_destination                   main
+     00008004  _size                              main
+     00008006  _delay_1ms_ptr                     main
+     0000840F  _write_byte_EEPROM_ptr             main
+     00008411  _data                              main
+     00008412  _address_hight                     main
+     00008413  _address_low                       main
+     00008626  ___ret_aux                         main
+     00008627  _cont                              main
+     00008629  _flag                              main
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 11.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_INITIALIZED                        0000862B    0000000E =          14. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00 + NoICE + sdld,  page 12.
+
+Files Linked                              [ module(s) ]
+
+_build/sysmap.rel                         [ init ]
+_build/Z80-Bootloader-v1.rel              [ main ]
+
+
+Libraries Linked                          [ object file ]
+
+/usr/local/bin/../share/sdcc/lib/z80/z80.lib
+                                          [ isprint.rel ]
+/usr/local/bin/../share/sdcc/lib/z80/z80.lib
+                                          [ __sdcc_call_hl.rel ]
+/usr/local/bin/../share/sdcc/lib/z80/z80.lib
+                                          [ _memcpy.rel ]
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 13.
+
+User Base Address Definitions
+
+_CODE = 0x6810
+_DATA = 0x8000
+
+
